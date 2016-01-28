@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "outDir": "../bin",
+        "target": "ES6",
+        "sourceMap": true,
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "declaration": true
+    }
+}
