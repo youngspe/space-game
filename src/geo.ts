@@ -1,4 +1,8 @@
 'use strict';
+
+export const SIN_30 = 0.5;
+export const COS_30 = 0.86603;
+
 export interface Point {
     x: number;
     y: number;
@@ -9,11 +13,24 @@ export class GeoPoint implements Point {
     y: number;
     
     public constructor(x: number, y: number) {
+        // comment
         this.x = x; this.y = y;
     }
     
     public plus(...points: Point[]): GeoPoint {
         return GeoPoint.add(this, ...points);
+    }
+    
+    public times(scalar: number): GeoPoint {
+        return new GeoPoint(this.x * scalar, this.y * scalar);
+    }
+    
+    public length(): number {
+        return Math.sqrt(this.lengthSquared());
+    }
+    
+    public lengthSquared(): number {
+        return this.x ** 2 + this.y ** 2;
     }
 }
 

@@ -1,7 +1,8 @@
 'use strict';
-import { Entity }   from './entity'
-import { Game }     from './game';
-import { Point }    from './geo';
+import { Entity }           from './entity'
+import { Game }             from './game';
+import { Point }            from './geo';
+import { SIN_30, COS_30 }   from './geo';
 
 class Style {
     fill: string;
@@ -32,11 +33,24 @@ export class Renderer {
         this.setTransform();
 
         for (let entity of this._entities) {
+            /*
             this.drawCircle(
                 entity.physics.position,
                 entity.physics.radius,
                 { fill: 'transparent', stroke: entity.render.color, lineWidth: 0.5 }
             );
+            */
+            ctx.save();
+            let radius = entity.physics.radius;
+            let pos = entity.physics.position;
+            
+            ctx.translate(pos.x, pos.y);
+            ctx.scale(radius, radius);
+            ctx.rotate(entity.physics.theta);
+            let style = { fill: 'transparent', stroke: entity.render.color, lineWidth: 0.5 };
+            this.setStyle(style);
+            this.shapeFns[entity.render.shape](ctx);
+            ctx.restore();
         }
     }
 
@@ -64,7 +78,32 @@ export class Renderer {
         ctx.fillStyle = style.fill;
         ctx.strokeStyle = style.stroke;
         ctx.lineWidth = style.lineWidth;
+        ctx.shadowColor = style.stroke;
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
     }
+
+    public shapeFns: { [s: string]: (ctx: CanvasRenderingContext2D) => void } = {
+        'circle': (ctx) => {
+            ctx.beginPath();
+            ctx.arc(0, 0, 1, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+        },
+        'hexagon': (ctx) => {
+            ctx.beginPath();
+            ctx.moveTo(0, -1);
+            ctx.lineTo(+COS_30, -SIN_30);
+            ctx.lineTo(+COS_30, +SIN_30);
+            ctx.lineTo(0, 1);
+            ctx.lineTo(-COS_30, +SIN_30);
+            ctx.lineTo(-COS_30, -SIN_30);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+    };
 
     public camera = { pos: { x: 0, y: 0 }, zoom: 1 };
 

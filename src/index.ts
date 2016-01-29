@@ -10,8 +10,16 @@ let mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
 let game = new Game();
 game.renderer.setCanvas(mainCanvas);
 
-setInterval(() => {
-    game.step(30);
+let lastStepTime = performance.now();
+setTimeout(function step() {
+    try {
+        let stepTime = performance.now();
+        game.step(stepTime - lastStepTime);
+        lastStepTime = stepTime;
+    } catch (err) {
+        console.log(err);
+    }    
+    setTimeout(step, 30);
 }, 30);
 
 game.addEntity({
@@ -20,30 +28,34 @@ game.addEntity({
         velocity: new GeoPoint(0, 0),
         radius: 1,
         drag: 1,
+        theta: 0,
+        omega: 0,
     },
     render: {
         color: 'blue',
+        shape: 'hexagon',
     },
     player: {}
 });
 
 let keyMap: { [s: string]: Key } = {
-    "KeyW": Key.Up,
-    "KeyA": Key.Left,
-    "KeyS": Key.Down,
-    "KeyD": Key.Right,
+    81: Key.UpLeft,         // Q
+    87: Key.Up,             // W
+    69: Key.UpRight,        // E
+    65: Key.DownLeft,       // A
+    83: Key.Down,           // S
+    68: Key.DownRight,      // D
 }
 
 document.addEventListener('keydown', (e: any) => {
-    let key = keyMap[e.code];
+    let key = keyMap[e.keyCode];
     if (key != undefined) {
-        console.log(Key[key]);
         game.input.keyDown(key);
     }
 });
 
 document.addEventListener('keyup', (e: any) => {
-    let key = keyMap[e.code];
+    let key = keyMap[e.keyCode];
     if (key != undefined) {
         game.input.keyUp(key);
     }

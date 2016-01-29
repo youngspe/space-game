@@ -1,10 +1,12 @@
 'use strict';
 
 export enum Key {
+    UpLeft,
     Up,
-    Left,
+    UpRight,
+    DownLeft,
     Down,
-    Right,
+    DownRight,
 }
 
 export enum KeyState {

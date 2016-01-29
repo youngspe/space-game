@@ -1,18 +1,21 @@
 'use strict';
-import { GeoPoint } from './geo';
+import { Point } from './geo';
 
 export interface Entity {
     id?: number;
     
     render?: {
         color: string,
+        shape: string,
     };
     
     physics?: {
         radius: number,
-        position: GeoPoint,
-        velocity: GeoPoint,
+        position: Point,
+        velocity: Point,
         drag: number,
+        theta: number,
+        omega: number,
     };
     
     player?: {};

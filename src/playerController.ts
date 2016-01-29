@@ -1,8 +1,10 @@
 'use strict';
-import { Entity }       from './entity';
-import { Game }         from './game';
-import { GeoPoint }     from './geo';
-import { Input, Key, KeyState }   from './input';
+import { Entity }               from './entity';
+import { Game }                 from './game';
+import { GeoPoint }             from './geo';
+import { SIN_30, COS_30 }       from './geo';
+import { Input, Key, KeyState } from './input';
+
 
 export class PlayerController {
     public constructor(game: Game) {
@@ -12,23 +14,36 @@ export class PlayerController {
             }
         })
     }
-    
+
     public step(elapsedMs: number, input: Input) {
+        let phys = this.player.physics;
         let seconds = elapsedMs / 1000;
-        let accel = 150; // 1 unit/s^2
-        let dv = accel * seconds;
-        
-        let vx = this.player.physics.velocity.x;
-        let vy = this.player.physics.velocity.y;
-        
-        if (KeyState.isDown(input.getKey(Key.Up))) vy -= dv;
-        if (KeyState.isDown(input.getKey(Key.Down))) vy += dv;
-        
-        if (KeyState.isDown(input.getKey(Key.Left))) vx -= dv;
-        if (KeyState.isDown(input.getKey(Key.Right))) vx += dv;
-        
-        this.player.physics.velocity = new GeoPoint(vx, vy);
+        let accel = 600; // 1 unit/s^2
+        let dvAmount = accel * seconds;
+
+        let dvx = 0;
+        let dvy = 0;
+
+        if (KeyState.isDown(input.getKey(Key.Up))) dvy -= 1;
+        if (KeyState.isDown(input.getKey(Key.Down))) dvy += 1;
+
+        if (KeyState.isDown(input.getKey(Key.UpLeft))) { dvx -= COS_30; dvy -= SIN_30; }
+        if (KeyState.isDown(input.getKey(Key.UpRight))) { dvx += COS_30; dvy -= SIN_30; }
+
+        if (KeyState.isDown(input.getKey(Key.DownLeft))) { dvx -= COS_30; dvy += SIN_30; }
+        if (KeyState.isDown(input.getKey(Key.DownRight))) { dvx += COS_30; dvy += SIN_30; }
+
+        let len = Math.sqrt(dvx ** 2 + dvy ** 2);
+        if (len <= 0.05) {
+            // either zero or there's a rounding error.
+            return;
+        }
+        dvx *= dvAmount / len;
+        dvy *= dvAmount / len;
+
+        phys.velocity.x += dvx;
+        phys.velocity.y += dvy;
     }
-    
+
     public player: Entity;
 }
