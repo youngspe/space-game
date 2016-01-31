@@ -33,13 +33,6 @@ export class Renderer {
         this.setTransform();
 
         for (let entity of this._entities) {
-            /*
-            this.drawCircle(
-                entity.physics.position,
-                entity.physics.radius,
-                { fill: 'transparent', stroke: entity.render.color, lineWidth: 0.5 }
-            );
-            */
             ctx.save();
             let radius = entity.physics.radius;
             let pos = entity.physics.position;

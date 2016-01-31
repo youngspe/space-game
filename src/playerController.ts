@@ -1,7 +1,7 @@
 'use strict';
 import { Entity }               from './entity';
 import { Game }                 from './game';
-import { GeoPoint }             from './geo';
+import { Point }                from './geo';
 import { SIN_30, COS_30 }       from './geo';
 import { Input, Key, KeyState } from './input';
 
@@ -16,7 +16,6 @@ export class PlayerController {
     }
 
     public step(elapsedMs: number, input: Input) {
-        let phys = this.player.physics;
         let seconds = elapsedMs / 1000;
         let accel = 600; // 1 unit/s^2
         let dvAmount = accel * seconds;
@@ -36,13 +35,13 @@ export class PlayerController {
         let len = Math.sqrt(dvx ** 2 + dvy ** 2);
         if (len <= 0.05) {
             // either zero or there's a rounding error.
+            this.player.ship.direction = null;
             return;
         }
-        dvx *= dvAmount / len;
-        dvy *= dvAmount / len;
+        dvx /= len;
+        dvy /= len;
 
-        phys.velocity.x += dvx;
-        phys.velocity.y += dvy;
+        this.player.ship.direction = { x: dvx, y: dvy };
     }
 
     public player: Entity;

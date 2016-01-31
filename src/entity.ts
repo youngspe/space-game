@@ -19,4 +19,11 @@ export interface Entity {
     };
     
     player?: {};
+    
+    ship?: {
+        direction?: Point,
+        accel: number,
+    };
+    
+    enemy?: {};
 }

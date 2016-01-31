@@ -1,10 +1,12 @@
 'use strict';
+import { EnemyController }  from './enemyController';
 import { Entity }           from './entity';
 import { Event }            from './event';
 import { Input }            from './input';
 import { Physics }          from './physics';
 import { PlayerController } from './playerController';
 import { Renderer }         from './renderer';
+import { ShipController }   from './shipController';
 
 export class BaseGame<E extends { id?: number }> {
     public entities = new Set<E>();
@@ -30,10 +32,14 @@ export class Game extends BaseGame<Entity> {
     public physics = new Physics(this);
     public renderer = new Renderer(this);
     public playerController = new PlayerController(this);
+    public shipController = new ShipController(this);
+    public enemyController = new EnemyController(this);
     public input = new Input();
     
     public step(elapsedMs: number) {
         this.playerController.step(elapsedMs, this.input);
+        this.enemyController.step(elapsedMs, this.playerController.player);
+        this.shipController.step(elapsedMs);
         this.physics.step(elapsedMs);
         this.input.postStep();
     }

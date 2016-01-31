@@ -2,7 +2,6 @@
 'use strict';
 import { Entity }   from './entity';
 import { Game }     from './game';
-import { GeoPoint}  from './geo';
 import { Key }      from './input';
 
 let mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
@@ -18,14 +17,14 @@ setTimeout(function step() {
         lastStepTime = stepTime;
     } catch (err) {
         console.log(err);
-    }    
+    }
     setTimeout(step, 30);
 }, 30);
 
 game.addEntity({
     physics: {
-        position: new GeoPoint(0, 0),
-        velocity: new GeoPoint(0, 0),
+        position: { x: 0, y: 0 },
+        velocity: { x: 0, y: 0 },
         radius: 1,
         drag: 1,
         theta: 0,
@@ -35,7 +34,29 @@ game.addEntity({
         color: 'blue',
         shape: 'hexagon',
     },
-    player: {}
+    player: {},
+    ship: {
+        accel: 600,
+    },
+});
+
+game.addEntity({
+    physics: {
+        position: { x: 10, y: 0 },
+        velocity: { x: 0, y: 0 },
+        radius: 1,
+        drag: 1,
+        theta: 0,
+        omega: 0,
+    },
+    render: {
+        color: 'green',
+        shape: 'circle',
+    },
+    enemy: {},
+    ship: {
+        accel: 200,
+    },
 });
 
 let keyMap: { [s: string]: Key } = {
