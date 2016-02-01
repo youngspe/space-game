@@ -16,9 +16,9 @@ export class PlayerController {
     }
 
     public step(elapsedMs: number, input: Input) {
-        let seconds = elapsedMs / 1000;
-        let accel = 600; // 1 unit/s^2
-        let dvAmount = accel * seconds;
+        if (this.player == null) {
+            return;
+        }
 
         let dvx = 0;
         let dvy = 0;
@@ -44,5 +44,5 @@ export class PlayerController {
         this.player.ship.direction = { x: dvx, y: dvy };
     }
 
-    public player: Entity;
+    public player: Entity = null;
 }

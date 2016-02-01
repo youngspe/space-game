@@ -10,10 +10,12 @@ let game = new Game();
 game.renderer.setCanvas(mainCanvas);
 
 let lastStepTime = performance.now();
+let timescale = 1;
+
 setTimeout(function step() {
     try {
         let stepTime = performance.now();
-        game.step(stepTime - lastStepTime);
+        game.step((stepTime - lastStepTime) * timescale);
         lastStepTime = stepTime;
     } catch (err) {
         console.log(err);
@@ -29,14 +31,18 @@ game.addEntity({
         drag: 1,
         theta: 0,
         omega: 0,
+        mass: 1,
+        bounce: 0.96,
     },
     render: {
-        color: 'blue',
+        color: '#00A0FF',
         shape: 'hexagon',
     },
     player: {},
     ship: {
         accel: 600,
+        hp: 10,
+        maxHp: 10,
     },
 });
 
@@ -45,21 +51,25 @@ game.addEntity({
         position: { x: 10, y: 0 },
         velocity: { x: 0, y: 0 },
         radius: 1,
-        drag: 1,
+        drag: 0.25,
         theta: 0,
         omega: 0,
+        mass: 1,
+        bounce: 0.96,
     },
     render: {
-        color: 'green',
+        color: '#FF8000',
         shape: 'circle',
     },
     enemy: {},
     ship: {
         accel: 200,
+        hp: 10,
+        maxHp: 10,
     },
 });
 
-let keyMap: { [s: string]: Key } = {
+let keyMap: { [i: number]: Key } = {
     81: Key.UpLeft,         // Q
     87: Key.Up,             // W
     69: Key.UpRight,        // E

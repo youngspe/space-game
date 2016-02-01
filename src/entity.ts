@@ -16,6 +16,8 @@ export interface Entity {
         drag: number,
         theta: number,
         omega: number,
+        mass: number,
+        bounce: number
     };
     
     player?: {};
@@ -23,6 +25,8 @@ export interface Entity {
     ship?: {
         direction?: Point,
         accel: number,
+        hp: number,
+        maxHp: number,
     };
     
     enemy?: {};

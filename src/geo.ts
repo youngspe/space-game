@@ -29,4 +29,16 @@ export module Point {
     export function lengthSquared(p: Point): number {
         return p.x ** 2 + p.y ** 2;
     }
+    
+    export function dist(p1: Point, p2: Point): number {
+        return Math.sqrt(distSquared(p1, p2));
+    }
+    
+    export function distSquared(p1: Point, p2: Point): number {
+        return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
+    }
+    
+    export function dot(p1: Point, p2: Point): number {
+        return p1.x * p2.x + p1.y * p2.y;
+    }
 }
