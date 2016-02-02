@@ -12,7 +12,7 @@ class Style {
     alpha: number;
 }
 
-const VIEW_HEIGHT = 100;
+const VIEW_HEIGHT = 75;
 
 export class Renderer {
     public constructor(entities: EntityContainer<Entity>) {
@@ -25,6 +25,7 @@ export class Renderer {
     }
 
     public render(elapsedMs: number) {
+        let seconds = elapsedMs / 1000;
         let ctx = this._context;
         let canvas = ctx.canvas;
         canvas.width = canvas.clientWidth * this.dpiScale;
@@ -35,25 +36,68 @@ export class Renderer {
         this.setTransform();
 
         for (let entity of this._entities) {
-            ctx.save();
-            let radius = entity.render.radius;
-            let pos = entity.position;
-
-            ctx.translate(pos.x, pos.y);
-            ctx.scale(radius, radius);
             if (entity.physics) {
-                ctx.rotate(entity.physics.theta);
+                const BLUR_COUNT = 3;
+                for (let i = 0; i < BLUR_COUNT; ++i) {
+                    let pos = Point.add(
+                        entity.position,
+                        {
+                            x: -entity.physics.velocity.x * seconds * i / BLUR_COUNT,
+                            y: -entity.physics.velocity.y * seconds * i / BLUR_COUNT,
+                        }
+                    );
+                    let len = Point.length(entity.physics.velocity);
+                    this.renderEntity(entity, pos, 1.0 / BLUR_COUNT,
+                        {
+                            dir: Point.normalize(entity.physics.velocity),
+                            factor: len * seconds / (BLUR_COUNT + 1) / entity.render.radius + 1,
+                        });
+                }
+            } else {
+                this.renderEntity(entity, entity.position, 1, null);
             }
-            let style = {
-                fill: 'transparent',
-                stroke: entity.render.color,
-                lineWidth: entity.render.lineWidth,
-                alpha: entity.render.alpha,
-            };
-            this.setStyle(style);
-            this.shapeFns[entity.render.shape](ctx);
-            ctx.restore();
         }
+    }
+
+    private renderEntity(e: Entity, pos: Point, alpha: number, stretch: { dir: Point, factor: number }) {
+        let ctx = this._context;
+        ctx.save();
+        let radius = e.render.radius;
+
+        ctx.translate(pos.x, pos.y);
+        ctx.scale(radius, radius);
+        if (stretch) {
+            this.stretch(stretch.dir, stretch.factor);
+        }
+        
+        if (e.physics) {
+            ctx.rotate(e.physics.theta);
+        }
+        let style = {
+            fill: 'transparent',
+            stroke: e.render.color,
+            lineWidth: e.render.lineWidth,
+            alpha: e.render.alpha * alpha,
+        };
+        this.setStyle(style);
+        this.shapeFns[e.render.shape](ctx);
+        ctx.restore();
+    }
+
+    private stretch(dir: Point, factor: number) {
+        let ab = { x: 1, y: 0 };
+        let abDot = Point.dot(ab, dir);
+        let abAmount = abDot * (factor - 1);
+        ab.x += dir.x * abAmount;
+        ab.y += dir.y * abAmount;
+
+        let bc = { x: 0, y: 1 };
+        let bcDot = Point.dot(bc, dir);
+        let bcAmount = bcDot * (factor - 1);
+        bc.x += dir.x * bcAmount;
+        bc.y += dir.y * bcAmount;
+        
+        this._context.transform(ab.x, ab.y, bc.x, bc.y, 0, 0);
     }
 
     private setTransform() {

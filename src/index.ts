@@ -107,6 +107,14 @@ window.addEventListener('mousemove', (e: MouseEvent) => {
     game.input.cursor = game.renderer.screenToWorld(p);
 });
 
+window.addEventListener('mousedown', (e: MouseEvent) => {
+    game.input.keyDown(Key.Fire);
+});
+
+window.addEventListener('mouseup', (e: MouseEvent) => {
+    game.input.keyUp(Key.Fire);
+});
+
 let lastRenderTime = performance.now();
 requestAnimationFrame(function render() {
     let renderTime = performance.now();

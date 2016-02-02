@@ -1,4 +1,5 @@
 'use strict';
+import { Bullet }               from './bullet';
 import { Entity }               from './entity';
 import { EntityContainer }      from './entityContainer';
 import { Game }                 from './game';
@@ -14,9 +15,11 @@ export class PlayerController {
                 this.player = e;
             }
         })
+        this._entities = entities;
     }
 
     public step(elapsedMs: number, input: Input) {
+        let seconds = elapsedMs / 1000;
         if (this.player == null) {
             return;
         }
@@ -37,13 +40,41 @@ export class PlayerController {
         if (len <= 0.05) {
             // either zero or there's a rounding error.
             this.player.ship.direction = null;
-            return;
+        } else {
+            dvx /= len;
+            dvy /= len;
         }
-        dvx /= len;
-        dvy /= len;
 
         this.player.ship.direction = { x: dvx, y: dvy };
+        
+        // Bullets:
+        if (this._bulletTimeLeft <= 0 && KeyState.isDown(input.getKey(Key.Fire))) {
+            let normal = Point.subtract(input.cursor, this.player.position);
+            let len = Point.length(normal);
+            normal.x /= len; normal.y /= len;
+            
+            let newPos = Point.clone(this.player.position);
+            newPos.x += normal.x * this.player.physics.radius * 1.5;
+            newPos.y += normal.y * this.player.physics.radius * 1.5;
+            
+            let newVel = Point.clone(this.player.physics.velocity);
+            newVel.x += normal.x * 200;
+            newVel.y += normal.y * 200;
+            
+            let newBullet = Bullet.create(newPos, newVel);
+            this._entities.addEntity(newBullet);
+            
+            this._bulletTimeLeft += this.bulletTime;
+        }
+        
+        if (this._bulletTimeLeft > 0) {
+            this._bulletTimeLeft -= seconds;
+        }
     }
 
     public player: Entity = null;
+    public bulletTime = 0.1;
+    
+    private _bulletTimeLeft = 0;
+    private _entities: EntityContainer<Entity>;
 }

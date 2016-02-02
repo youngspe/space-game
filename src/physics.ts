@@ -151,7 +151,7 @@ export class Physics {
         }
     }
     
-    public iterations = 2;
+    public iterations = 4;
 
     public intersections: Intersection[] = [];
 

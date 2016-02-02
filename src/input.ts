@@ -8,6 +8,8 @@ export enum Key {
     DownLeft,
     Down,
     DownRight,
+    
+    Fire,
 }
 
 export enum KeyState {
