@@ -1,11 +1,12 @@
 'use strict';
-import { Entity }   from './entity';
-import { Game }     from './game';
+import { Entity }           from './entity';
+import { EntityContainer }  from './entityContainer';
+import { Game }             from './game';
 
 export class ShipController {
-    public constructor(game: Game) {
-        game.entityAdded.listen(e => { if (e.ship) this._entities.add(e); });
-        game.entityRemoved.listen(e => { this._entities.delete(e); });
+    public constructor(entities: EntityContainer<Entity>) {
+        entities.entityAdded.listen(e => { if (e.ship) this._entities.add(e); });
+        entities.entityRemoved.listen(e => { this._entities.delete(e); });
     }
 
     public step(elapsedMs: number) {

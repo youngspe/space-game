@@ -23,7 +23,7 @@ setTimeout(function step() {
     setTimeout(step, 30);
 }, 30);
 
-game.addEntity({
+game.entities.addEntity({
     position: { x: 0, y: 0 },
     physics: {
         velocity: { x: 0, y: 0 },
@@ -49,7 +49,7 @@ game.addEntity({
     },
 });
 
-game.addEntity({
+game.entities.addEntity({
     position: { x: 10, y: 0 },
     physics: {
         velocity: { x: 0, y: 0 },

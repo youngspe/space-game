@@ -1,5 +1,6 @@
 'use strict';
-import { Entity }           from './entity'
+import { Entity }           from './entity';
+import { EntityContainer }  from './entityContainer';
 import { Game }             from './game';
 import { Point }            from './geo';
 import { SIN_30, COS_30 }   from './geo';
@@ -14,9 +15,9 @@ class Style {
 const VIEW_HEIGHT = 100;
 
 export class Renderer {
-    public constructor(game: Game) {
-        game.entityAdded.listen(e => { if (e.render) this._entities.add(e); });
-        game.entityRemoved.listen(e => { this._entities.delete(e); })
+    public constructor(entities: EntityContainer<Entity>) {
+        entities.entityAdded.listen(e => { if (e.render) this._entities.add(e); });
+        entities.entityRemoved.listen(e => { this._entities.delete(e); })
     }
 
     public setCanvas(canvas: HTMLCanvasElement) {

@@ -1,10 +1,11 @@
 'use strict';
-import { Entity }   from './entity';
-import { Game }     from './game';
-import { Input }    from './input';
+import { Entity }           from './entity';
+import { EntityContainer }  from './entityContainer';
+import { Game }             from './game';
+import { Input }            from './input';
 
 export class Hud {
-    public constructor(game: Game) {
+    public constructor(entities: EntityContainer<Entity>) {
         this._cursorDisplay = {
             position: { x: 0, y: 0 },
             render: {
@@ -15,7 +16,7 @@ export class Hud {
                 lineWidth: 0.125,
             },
         };
-        game.addEntity(this._cursorDisplay);
+        entities.addEntity(this._cursorDisplay);
     }
     
     public step(input: Input) {

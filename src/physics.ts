@@ -1,7 +1,8 @@
 'use strict';
-import { Entity }   from './entity';
-import { Game }     from './game';
-import { Point }    from './geo';
+import { Entity }           from './entity';
+import { EntityContainer }  from './entityContainer';
+import { Game }             from './game';
+import { Point }            from './geo';
 
 export interface Intersection {
     a: Entity,
@@ -10,9 +11,9 @@ export interface Intersection {
 
 const worldDrag = 8;
 export class Physics {
-    public constructor(game: Game) {
-        game.entityAdded.listen(e => { if (e.physics) this._entities.add(e); });
-        game.entityRemoved.listen(e => { this._entities.delete(e); });
+    public constructor(entities: EntityContainer<Entity>) {
+        entities.entityAdded.listen(e => { if (e.physics) this._entities.add(e); });
+        entities.entityRemoved.listen(e => { this._entities.delete(e); });
     }
     
     public step(elapsedMs: number) {

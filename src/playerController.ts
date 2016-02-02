@@ -1,5 +1,6 @@
 'use strict';
 import { Entity }               from './entity';
+import { EntityContainer }      from './entityContainer';
 import { Game }                 from './game';
 import { Point }                from './geo';
 import { SIN_30, COS_30 }       from './geo';
@@ -7,8 +8,8 @@ import { Input, Key, KeyState } from './input';
 
 
 export class PlayerController {
-    public constructor(game: Game) {
-        game.entityAdded.listen(e => {
+    public constructor(entities: EntityContainer<Entity>) {
+        entities.entityAdded.listen(e => {
             if (e.player != null) {
                 this.player = e;
             }
