@@ -9,6 +9,7 @@ export class Hud {
             position: { x: 0, y: 0 },
             render: {
                 color: '#808080',
+                alpha: 0.3,
                 radius: 3,
                 shape: 'hexagon',
                 lineWidth: 0.125,

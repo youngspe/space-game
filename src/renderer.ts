@@ -8,6 +8,7 @@ class Style {
     fill: string;
     stroke: string;
     lineWidth: number;
+    alpha: number;
 }
 
 const VIEW_HEIGHT = 100;
@@ -36,13 +37,18 @@ export class Renderer {
             ctx.save();
             let radius = entity.render.radius;
             let pos = entity.position;
-            
+
             ctx.translate(pos.x, pos.y);
             ctx.scale(radius, radius);
             if (entity.physics) {
                 ctx.rotate(entity.physics.theta);
-            }    
-            let style = { fill: 'transparent', stroke: entity.render.color, lineWidth: entity.render.lineWidth };
+            }
+            let style = {
+                fill: 'transparent',
+                stroke: entity.render.color,
+                lineWidth: entity.render.lineWidth,
+                alpha: entity.render.alpha,
+            };
             this.setStyle(style);
             this.shapeFns[entity.render.shape](ctx);
             ctx.restore();
@@ -73,6 +79,7 @@ export class Renderer {
         ctx.fillStyle = style.fill;
         ctx.strokeStyle = style.stroke;
         ctx.lineWidth = style.lineWidth;
+        ctx.globalAlpha = style.alpha;
         ctx.shadowColor = style.stroke;
         ctx.shadowBlur = 10;
         ctx.shadowOffsetX = 0;
@@ -99,7 +106,7 @@ export class Renderer {
             ctx.stroke();
         }
     };
-    
+
     public screenToWorld(p: Point): Point {
         let ctx = this._context;
         let x = p.x; let y = p.y;
@@ -109,7 +116,7 @@ export class Renderer {
         x *= fac; y *= fac;
         return { x: x, y: y };
     }
-    
+
     public dpiScale = 1;
 
     public camera = { pos: { x: 0, y: 0 }, zoom: 1 };

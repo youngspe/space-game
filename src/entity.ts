@@ -6,6 +6,7 @@ export interface Entity {
     
     render?: {
         color: string,
+        alpha: number,
         shape: string,
         radius: number,
         lineWidth: number,

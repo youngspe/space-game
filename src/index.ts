@@ -36,6 +36,7 @@ game.addEntity({
     },
     render: {
         color: '#00A0FF',
+        alpha: 1,
         shape: 'hexagon',
         radius: 1.2,
         lineWidth: 0.25,
@@ -61,6 +62,7 @@ game.addEntity({
     },
     render: {
         color: '#FF8000',
+        alpha: 1,
         shape: 'circle',
         radius: 1,
         lineWidth: 0.5,
