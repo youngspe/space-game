@@ -1,4 +1,5 @@
 'use strict';
+import { Point }    from './geo';
 
 export enum Key {
     UpLeft,
@@ -30,7 +31,7 @@ export class Input {
             this._keys[i] = KeyState.Up;
         }
     }
-    
+
     public getKey(key: Key) {
         return this._keys[key];
     }
@@ -40,11 +41,11 @@ export class Input {
             this._keys[key] = KeyState.Pressing;
         }
     }
-    
+
     public keyUp(key: Key) {
         this._toRelease.push(key);
     }
-    
+
     public postStep() {
         for (let i = 0; i < this._keys.length; ++i) {
             if (this._keys[i] == KeyState.Pressing) {
@@ -54,7 +55,7 @@ export class Input {
                 this._keys[i] = KeyState.Up;
             }
         }
-        
+
         for (let key of this._toRelease) {
             if (this._keys[key] != KeyState.Up) {
                 this._keys[key] = KeyState.Releasing;
@@ -62,6 +63,8 @@ export class Input {
         }
         this._toRelease.length = 0;
     }
+
+    public cursor: Point;
 
     private _toRelease: Key[] = [];
     private _keys: KeyState[];

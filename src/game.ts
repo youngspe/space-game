@@ -2,6 +2,7 @@
 import { EnemyController }  from './enemyController';
 import { Entity }           from './entity';
 import { Event }            from './event';
+import { Hud }              from './hud';
 import { Input }            from './input';
 import { Physics }          from './physics';
 import { PlayerController } from './playerController';
@@ -34,6 +35,7 @@ export class Game extends BaseGame<Entity> {
     public playerController = new PlayerController(this);
     public shipController = new ShipController(this);
     public enemyController = new EnemyController(this);
+    public hud = new Hud(this);
     public input = new Input();
     
     public step(elapsedMs: number) {
@@ -41,6 +43,7 @@ export class Game extends BaseGame<Entity> {
         this.enemyController.step(elapsedMs, this.playerController.player);
         this.shipController.step(elapsedMs);
         this.physics.step(elapsedMs);
+        this.hud.step(this.input);
         this.input.postStep();
     }
 }

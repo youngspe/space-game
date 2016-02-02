@@ -24,8 +24,8 @@ setTimeout(function step() {
 }, 30);
 
 game.addEntity({
+    position: { x: 0, y: 0 },
     physics: {
-        position: { x: 0, y: 0 },
         velocity: { x: 0, y: 0 },
         radius: 1,
         drag: 1,
@@ -37,6 +37,8 @@ game.addEntity({
     render: {
         color: '#00A0FF',
         shape: 'hexagon',
+        radius: 1.2,
+        lineWidth: 0.25,
     },
     player: {},
     ship: {
@@ -47,8 +49,8 @@ game.addEntity({
 });
 
 game.addEntity({
+    position: { x: 10, y: 0 },
     physics: {
-        position: { x: 10, y: 0 },
         velocity: { x: 0, y: 0 },
         radius: 1,
         drag: 0.25,
@@ -60,6 +62,8 @@ game.addEntity({
     render: {
         color: '#FF8000',
         shape: 'circle',
+        radius: 1,
+        lineWidth: 0.5,
     },
     enemy: {},
     ship: {
@@ -78,18 +82,27 @@ let keyMap: { [i: number]: Key } = {
     68: Key.DownRight,      // D
 }
 
-document.addEventListener('keydown', (e: any) => {
+window.addEventListener('keydown', (e: KeyboardEvent) => {
     let key = keyMap[e.keyCode];
     if (key != undefined) {
         game.input.keyDown(key);
     }
 });
 
-document.addEventListener('keyup', (e: any) => {
+window.addEventListener('keyup', (e: KeyboardEvent) => {
     let key = keyMap[e.keyCode];
     if (key != undefined) {
         game.input.keyUp(key);
     }
+});
+
+window.addEventListener('mousemove', (e: MouseEvent) => {
+    let rect = mainCanvas.getBoundingClientRect();
+    let p = {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    };
+    game.input.cursor = game.renderer.screenToWorld(p);
 });
 
 let lastRenderTime = performance.now();

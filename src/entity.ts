@@ -7,11 +7,14 @@ export interface Entity {
     render?: {
         color: string,
         shape: string,
+        radius: number,
+        lineWidth: number,
     };
+    
+    position?: Point;
     
     physics?: {
         radius: number,
-        position: Point,
         velocity: Point,
         drag: number,
         theta: number,

@@ -25,7 +25,7 @@ export class Physics {
         let seconds = elapsedMs / 1000;
         for (let entity of this._entities) {
             let phys = entity.physics;
-            let pos = phys.position;
+            let pos = entity.position;
             let vel = phys.velocity;
             pos.x += vel.x * seconds;
             pos.y += vel.y * seconds;
@@ -57,24 +57,24 @@ export class Physics {
         
         // Sort by leftmost bound of circle.
         list.sort((a, b) =>
-            Math.sign((a.physics.position.x - a.physics.radius) - (b.physics.position.x - b.physics.radius))
+            Math.sign((a.position.x - a.physics.radius) - (b.position.x - b.physics.radius))
         );
         
         // Sweep left-to-right through the entities.
         for (let i = 0; i < list.length; ++i) {
             let a = list[i];
-            let rightEdge = a.physics.position.x + a.physics.radius;
+            let rightEdge = a.position.x + a.physics.radius;
 
             // Check only entities to the right of a;
             for (let j = i + 1; j < list.length; ++j) {
                 let b = list[j];
-                if (b.physics.position.x - b.physics.radius >= rightEdge) {
+                if (b.position.x - b.physics.radius >= rightEdge) {
                     // No intersections are possible after this.
                     break;
                 }
 
                 let radSqr = (a.physics.radius + b.physics.radius) ** 2;
-                let distSqr = Point.distSquared(a.physics.position, b.physics.position);
+                let distSqr = Point.distSquared(a.position, b.position);
                 if (distSqr < radSqr) {
                     this.intersections.push({ a: a, b: b });
                 }
@@ -92,7 +92,7 @@ export class Physics {
         for (let i of this.intersections) {
             let a = i.a; let b = i.b;
             // Find the difference in position.
-            let difP = Point.subtract(b.physics.position, a.physics.position);
+            let difP = Point.subtract(b.position, a.position);
             let len = Point.length(difP);
             // Normalize the difference.
             let normal = { x: difP.x / len, y: difP.y / len };
@@ -145,8 +145,8 @@ export class Physics {
             let dx = cor.x / cor.mass * 1.05;
             let dy = cor.y / cor.mass * 1.05;
             
-            e.physics.position.x += dx;
-            e.physics.position.y += dy;
+            e.position.x += dx;
+            e.position.y += dy;
         }
     }
     

@@ -14,7 +14,7 @@ const VIEW_HEIGHT = 100;
 
 export class Renderer {
     public constructor(game: Game) {
-        game.entityAdded.listen(e => { if (e.physics && e.render) this._entities.add(e); });
+        game.entityAdded.listen(e => { if (e.render) this._entities.add(e); });
         game.entityRemoved.listen(e => { this._entities.delete(e); })
     }
 
@@ -25,8 +25,8 @@ export class Renderer {
     public render(elapsedMs: number) {
         let ctx = this._context;
         let canvas = ctx.canvas;
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
+        canvas.width = canvas.clientWidth * this.dpiScale;
+        canvas.height = canvas.clientHeight * this.dpiScale;
 
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -34,13 +34,15 @@ export class Renderer {
 
         for (let entity of this._entities) {
             ctx.save();
-            let radius = entity.physics.radius;
-            let pos = entity.physics.position;
+            let radius = entity.render.radius;
+            let pos = entity.position;
             
             ctx.translate(pos.x, pos.y);
             ctx.scale(radius, radius);
-            ctx.rotate(entity.physics.theta);
-            let style = { fill: 'transparent', stroke: entity.render.color, lineWidth: 0.5 };
+            if (entity.physics) {
+                ctx.rotate(entity.physics.theta);
+            }    
+            let style = { fill: 'transparent', stroke: entity.render.color, lineWidth: entity.render.lineWidth };
             this.setStyle(style);
             this.shapeFns[entity.render.shape](ctx);
             ctx.restore();
@@ -97,6 +99,18 @@ export class Renderer {
             ctx.stroke();
         }
     };
+    
+    public screenToWorld(p: Point): Point {
+        let ctx = this._context;
+        let x = p.x; let y = p.y;
+        x -= ctx.canvas.clientWidth / 2;
+        y -= ctx.canvas.clientHeight / 2;
+        let fac = VIEW_HEIGHT / ctx.canvas.clientHeight;
+        x *= fac; y *= fac;
+        return { x: x, y: y };
+    }
+    
+    public dpiScale = 1;
 
     public camera = { pos: { x: 0, y: 0 }, zoom: 1 };
 
