@@ -1,4 +1,5 @@
 'use strict';
+import { BulletController } from './bulletController';
 import { EnemyController }  from './enemyController';
 import { Entity }           from './entity';
 import { EntityContainer }  from './entityContainer';
@@ -22,6 +23,7 @@ export class Game extends BaseGame<Entity> {
     public playerController = new PlayerController(this.entities);
     public shipController = new ShipController(this.entities);
     public enemyController = new EnemyController(this.entities);
+    public bulletController = new BulletController(this.entities);
     public hud = new Hud(this.entities);
     public input = new Input();
     
@@ -29,6 +31,7 @@ export class Game extends BaseGame<Entity> {
         this.playerController.step(elapsedMs, this.input);
         this.enemyController.step(elapsedMs, this.playerController.player);
         this.shipController.step(elapsedMs);
+        this.bulletController.step(elapsedMs, this.physics.intersections);
         this.physics.step(elapsedMs);
         this.hud.step(this.input);
         this.input.postStep();

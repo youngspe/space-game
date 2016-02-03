@@ -1,37 +1,25 @@
 'use strict';
-import { Point } from './geo';
+import { BulletComponent }  from './bulletController';
+import { EnemyComponent }   from './enemyController';
+import { PhysicsComponent } from './physics';
+import { Point }            from './geo';
+import { RenderComponent }  from './renderer';
+import { ShipComponent }    from './shipController';
 
 export interface Entity {
     id?: number;
     
-    render?: {
-        color: string,
-        alpha: number,
-        shape: string,
-        radius: number,
-        lineWidth: number,
-    };
+    render?: RenderComponent;
     
     position?: Point;
     
-    physics?: {
-        radius: number,
-        velocity: Point,
-        drag: number,
-        theta: number,
-        omega: number,
-        mass: number,
-        bounce: number
-    };
+    physics?: PhysicsComponent;
     
     player?: {};
     
-    ship?: {
-        direction?: Point,
-        accel: number,
-        hp: number,
-        maxHp: number,
-    };
+    ship?: ShipComponent;
     
-    enemy?: {};
+    enemy?: EnemyComponent;
+    
+    bullet?: BulletComponent;
 }

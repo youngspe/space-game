@@ -1,8 +1,9 @@
 /// <reference path="../typings/node/node.d.ts" />
 'use strict';
-import { Entity }   from './entity';
-import { Game }     from './game';
-import { Key }      from './input';
+import { EnemyComponent }   from './enemyController';
+import { Entity }           from './entity';
+import { Game }             from './game';
+import { Key }              from './input';
 
 let mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
 
@@ -28,7 +29,7 @@ game.entities.addEntity({
     physics: {
         velocity: { x: 0, y: 0 },
         radius: 1,
-        drag: 1,
+        drag: 2,
         theta: 0,
         omega: 0,
         mass: 1,
@@ -49,31 +50,29 @@ game.entities.addEntity({
     },
 });
 
-game.entities.addEntity({
-    position: { x: 10, y: 0 },
-    physics: {
-        velocity: { x: 0, y: 0 },
-        radius: 1,
-        drag: 0.25,
-        theta: 0,
-        omega: 0,
-        mass: 1,
-        bounce: 0.96,
-    },
-    render: {
-        color: '#FF8000',
-        alpha: 1,
-        shape: 'circle',
-        radius: 1,
-        lineWidth: 0.5,
-    },
-    enemy: {},
-    ship: {
-        accel: 200,
-        hp: 10,
-        maxHp: 10,
-    },
-});
+for (let i = 0; i < 30; ++i) {
+    let x = Math.random() * 320 - 160;
+    let y = Math.random() * 320 - 160;
+    game.entities.addEntity(
+        EnemyComponent.createFollower({ x: x, y: y }, { x: 0, y: 0 })
+    );
+}
+
+for (let i = 0; i < 6; ++i) {
+    let x = Math.random() * 320 - 160;
+    let y = Math.random() * 320 - 160;
+    game.entities.addEntity(
+        EnemyComponent.createTank({ x: x, y: y }, { x: 0, y: 0 })
+    );
+}
+
+for (let i = 0; i < 30; ++i) {
+    let x = Math.random() * 320 - 160;
+    let y = Math.random() * 320 - 160;
+    game.entities.addEntity(
+        EnemyComponent.createSeeker({ x: x, y: y }, { x: 0, y: 0 })
+    );
+}
 
 let keyMap: { [i: number]: Key } = {
     81: Key.UpLeft,         // Q

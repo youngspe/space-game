@@ -5,6 +5,14 @@ import { Game }             from './game';
 import { Point }            from './geo';
 import { SIN_30, COS_30 }   from './geo';
 
+export interface RenderComponent {
+    color: string;
+    alpha: number;
+    shape: string;
+    radius: number;
+    lineWidth: number;
+}
+
 class Style {
     fill: string;
     stroke: string;
@@ -37,20 +45,24 @@ export class Renderer {
 
         for (let entity of this._entities) {
             if (entity.physics) {
-                const BLUR_COUNT = 3;
-                for (let i = 0; i < BLUR_COUNT; ++i) {
+                const MAX_BLUR_COUNT = 5;
+                let dir = Point.normalize(entity.physics.velocity);
+                let speed = Point.length(entity.physics.velocity);
+                let blurCount = Math.floor(speed * seconds / entity.render.radius + 1);
+                blurCount = Math.min(blurCount, MAX_BLUR_COUNT);
+                
+                for (let i = 0; i < blurCount; ++i) {
                     let pos = Point.add(
                         entity.position,
                         {
-                            x: -entity.physics.velocity.x * seconds * i / BLUR_COUNT,
-                            y: -entity.physics.velocity.y * seconds * i / BLUR_COUNT,
+                            x: -entity.physics.velocity.x * seconds * i / blurCount,
+                            y: -entity.physics.velocity.y * seconds * i / blurCount,
                         }
                     );
-                    let len = Point.length(entity.physics.velocity);
-                    this.renderEntity(entity, pos, 1.0 / BLUR_COUNT,
+                    this.renderEntity(entity, pos, Math.sqrt(1.0 / blurCount),
                         {
-                            dir: Point.normalize(entity.physics.velocity),
-                            factor: len * seconds / (BLUR_COUNT + 1) / entity.render.radius + 1,
+                            dir: dir,
+                            factor: speed * seconds / (blurCount + 1) / entity.render.radius + 1,
                         });
                 }
             } else {
@@ -69,14 +81,14 @@ export class Renderer {
         if (stretch) {
             this.stretch(stretch.dir, stretch.factor);
         }
-        
+
         if (e.physics) {
             ctx.rotate(e.physics.theta);
         }
         let style = {
             fill: 'transparent',
             stroke: e.render.color,
-            lineWidth: e.render.lineWidth,
+            lineWidth: e.render.lineWidth / e.render.radius,
             alpha: e.render.alpha * alpha,
         };
         this.setStyle(style);
@@ -96,7 +108,7 @@ export class Renderer {
         let bcAmount = bcDot * (factor - 1);
         bc.x += dir.x * bcAmount;
         bc.y += dir.y * bcAmount;
-        
+
         this._context.transform(ab.x, ab.y, bc.x, bc.y, 0, 0);
     }
 

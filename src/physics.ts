@@ -4,12 +4,22 @@ import { EntityContainer }  from './entityContainer';
 import { Game }             from './game';
 import { Point }            from './geo';
 
+export interface PhysicsComponent {
+    radius: number;
+    velocity: Point;
+    drag: number;
+    theta: number;
+    omega: number;
+    mass: number;
+    bounce: number;
+}
+
 export interface Intersection {
     a: Entity,
     b: Entity,
 }
 
-const worldDrag = 8;
+const worldDrag = 4;
 export class Physics {
     public constructor(entities: EntityContainer<Entity>) {
         entities.entityAdded.listen(e => { if (e.physics) this._entities.add(e); });
@@ -17,12 +27,26 @@ export class Physics {
     }
     
     public step(elapsedMs: number) {
+        this.intersections.clear();
         for (let i = 0; i < this.iterations; ++i) {
-            this.stepInternal(elapsedMs / this.iterations);
+            let intersections = this.stepInternal(elapsedMs / this.iterations);
+            for (let inter of intersections) {
+                this.addIntersection(inter.a, inter.b);
+                this.addIntersection(inter.b, inter.a);
+            }
         }
     }
+    
+    private addIntersection(a: Entity, b: Entity) {
+        let inters = this.intersections.get(a);
+        if (inters == undefined) {
+            inters = [];
+            this.intersections.set(a, inters);
+        }
+        inters.push({ a: a, b: b });
+    }
 
-    private stepInternal(elapsedMs: number) {
+    private stepInternal(elapsedMs: number): Intersection[] {
         let seconds = elapsedMs / 1000;
         for (let entity of this._entities) {
             let phys = entity.physics;
@@ -38,13 +62,14 @@ export class Physics {
             phys.theta += phys.omega * seconds;
         }
 
-        this.findIntersections();
+        let intersections = this.findIntersections();
 
-        this.correctCollisions();
+        this.correctCollisions(intersections);
+        return intersections;
     }
 
-    private findIntersections() {
-        this.intersections.length = 0;
+    private findIntersections(): Intersection[] {
+        let intersections: Intersection[] = [];
 
         var list = new Array<Entity>(this._entities.size);
 
@@ -77,20 +102,18 @@ export class Physics {
                 let radSqr = (a.physics.radius + b.physics.radius) ** 2;
                 let distSqr = Point.distSquared(a.position, b.position);
                 if (distSqr < radSqr) {
-                    this.intersections.push({ a: a, b: b });
+                    intersections.push({ a: a, b: b });
                 }
             }
         }
-
-        if (this.intersections.length > 0) {
-            console.log(this.intersections);
-        }
+        
+        return intersections;
     }
 
-    private correctCollisions() {
+    private correctCollisions(intersections: Intersection[]) {
         let corrections = new Map<Entity, { x: number, y: number, mass: number }>();
         
-        for (let i of this.intersections) {
+        for (let i of intersections) {
             let a = i.a; let b = i.b;
             // Find the difference in position.
             let difP = Point.subtract(b.position, a.position);
@@ -153,7 +176,7 @@ export class Physics {
     
     public iterations = 4;
 
-    public intersections: Intersection[] = [];
+    public intersections = new Map<Entity, Intersection[]>();
 
     private _entities = new Set<Entity>();
 }

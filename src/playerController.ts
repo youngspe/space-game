@@ -1,5 +1,5 @@
 'use strict';
-import { Bullet }               from './bullet';
+import { BulletComponent }     from './bulletController';
 import { Entity }               from './entity';
 import { EntityContainer }      from './entityContainer';
 import { Game }                 from './game';
@@ -14,7 +14,12 @@ export class PlayerController {
             if (e.player != null) {
                 this.player = e;
             }
-        })
+        });
+        entities.entityRemoved.listen(e => {
+            if (e == this.player) {
+                this.player = null;
+            }
+        });
         this._entities = entities;
     }
 
@@ -61,7 +66,7 @@ export class PlayerController {
             newVel.x += normal.x * 200;
             newVel.y += normal.y * 200;
             
-            let newBullet = Bullet.create(newPos, newVel);
+            let newBullet = BulletComponent.createBullet(newPos, newVel, this.bulletDamage, this.bulletLifespan);
             this._entities.addEntity(newBullet);
             
             this._bulletTimeLeft += this.bulletTime;
@@ -74,6 +79,8 @@ export class PlayerController {
 
     public player: Entity = null;
     public bulletTime = 0.1;
+    public bulletLifespan = 4;
+    public bulletDamage = 6;
     
     private _bulletTimeLeft = 0;
     private _entities: EntityContainer<Entity>;
