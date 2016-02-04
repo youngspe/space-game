@@ -11,6 +11,8 @@ export interface RenderComponent {
     shape: string;
     radius: number;
     lineWidth: number;
+    maxBlur: number;
+    glow: number;
 }
 
 class Style {
@@ -18,6 +20,7 @@ class Style {
     stroke: string;
     lineWidth: number;
     alpha: number;
+    glow: number;
 }
 
 const VIEW_HEIGHT = 75;
@@ -49,7 +52,7 @@ export class Renderer {
                 let dir = Point.normalize(entity.physics.velocity);
                 let speed = Point.length(entity.physics.velocity);
                 let blurCount = Math.floor(speed * seconds / entity.render.radius + 1);
-                blurCount = Math.min(blurCount, MAX_BLUR_COUNT);
+                blurCount = Math.min(blurCount, MAX_BLUR_COUNT, entity.render.maxBlur);
                 
                 for (let i = 0; i < blurCount; ++i) {
                     let pos = Point.add(
@@ -90,6 +93,7 @@ export class Renderer {
             stroke: e.render.color,
             lineWidth: e.render.lineWidth / e.render.radius,
             alpha: e.render.alpha * alpha,
+            glow: e.render.glow,
         };
         this.setStyle(style);
         this.shapeFns[e.render.shape](ctx);
@@ -137,10 +141,13 @@ export class Renderer {
         ctx.strokeStyle = style.stroke;
         ctx.lineWidth = style.lineWidth;
         ctx.globalAlpha = style.alpha;
-        ctx.shadowColor = style.stroke;
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 0;
+        
+        if (style.glow > 0) {
+            ctx.shadowColor = style.stroke;
+            ctx.shadowBlur = 10 * style.glow;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+        }
     }
 
     public shapeFns: { [s: string]: (ctx: CanvasRenderingContext2D) => void } = {
@@ -175,6 +182,7 @@ export class Renderer {
     }
 
     public dpiScale = 1;
+    public glow = 10;
 
     public camera = { pos: { x: 0, y: 0 }, zoom: 1 };
 

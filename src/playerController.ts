@@ -48,9 +48,8 @@ export class PlayerController {
         } else {
             dvx /= len;
             dvy /= len;
+            this.player.ship.direction = { x: dvx, y: dvy };
         }
-
-        this.player.ship.direction = { x: dvx, y: dvy };
         
         // Bullets:
         if (this._bulletTimeLeft <= 0 && KeyState.isDown(input.getKey(Key.Fire))) {

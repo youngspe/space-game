@@ -1,15 +1,16 @@
 'use strict';
-import { BulletController } from './bulletController';
-import { EnemyController }  from './enemyController';
-import { Entity }           from './entity';
-import { EntityContainer }  from './entityContainer';
-import { Event }            from './event';
-import { Hud }              from './hud';
-import { Input }            from './input';
-import { Physics }          from './physics';
-import { PlayerController } from './playerController';
-import { Renderer }         from './renderer';
-import { ShipController }   from './shipController';
+import { BulletController }     from './bulletController';
+import { EnemyController }      from './enemyController';
+import { Entity }               from './entity';
+import { EntityContainer }      from './entityContainer';
+import { Event }                from './event';
+import { Hud }                  from './hud';
+import { Input }                from './input';
+import { Physics }              from './physics';
+import { ParticleController }   from './particleController';
+import { PlayerController }     from './playerController';
+import { Renderer }             from './renderer';
+import { ShipController }       from './shipController';
 
 export class BaseGame<E extends { id?: number }> {
     public entities = new EntityContainer<E>();
@@ -24,6 +25,7 @@ export class Game extends BaseGame<Entity> {
     public shipController = new ShipController(this.entities);
     public enemyController = new EnemyController(this.entities);
     public bulletController = new BulletController(this.entities);
+    public particleControler = new ParticleController(this.entities);
     public hud = new Hud(this.entities);
     public input = new Input();
     
@@ -32,6 +34,7 @@ export class Game extends BaseGame<Entity> {
         this.enemyController.step(elapsedMs, this.playerController.player);
         this.shipController.step(elapsedMs);
         this.bulletController.step(elapsedMs, this.physics.intersections);
+        this.particleControler.step(elapsedMs);
         this.physics.step(elapsedMs);
         this.hud.step(this.input);
         this.input.postStep();

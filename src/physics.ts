@@ -12,6 +12,7 @@ export interface PhysicsComponent {
     omega: number;
     mass: number;
     bounce: number;
+    collide: boolean;
 }
 
 export interface Intersection {
@@ -71,13 +72,11 @@ export class Physics {
     private findIntersections(): Intersection[] {
         let intersections: Intersection[] = [];
 
-        var list = new Array<Entity>(this._entities.size);
+        var list: Entity[] = [];
 
         {
-            let i = 0;
             for (let e of this._entities) {
-                list[i] = e;
-                ++i;
+                if (e.physics.collide) { list.push(e); }
             }
         }
         

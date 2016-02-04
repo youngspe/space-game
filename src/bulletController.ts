@@ -6,7 +6,6 @@ import { Point }            from './geo';
 
 export interface BulletComponent {
     damage: number,
-    timeRemaining: number,
     isAlive: boolean,
 }
 
@@ -21,6 +20,7 @@ export module BulletComponent {
                 theta: 0,
                 omega: 0,
                 mass: 0.5,
+                collide: true,
             },
             position: pos,
             render: {
@@ -29,11 +29,17 @@ export module BulletComponent {
                 radius: 0.4,
                 lineWidth: 0.1,
                 shape: 'circle',
+                maxBlur: 5,
+                glow: 0,
             },
             bullet: {
                 damage: damage,
-                timeRemaining: lifespan,
                 isAlive: true,
+            },
+            particle: {
+                lifespan: lifespan,
+                timeRemaining: lifespan,
+                count: false,
             }
         }
     }
@@ -45,16 +51,12 @@ export class BulletController {
         entities.entityRemoved.listen(e => { this._bullets.delete(e); });
         this._entities = entities;
     }
-    
+
     public step(elapsedMs: number, intersections: Map<Entity, Intersection[]>) {
         let seconds = elapsedMs / 1000;
-        
+
         for (let b of this._bullets) {
-            if (b.bullet.timeRemaining <= 0) {
-                this._entities.removeEntity(b);
-                continue;
-            }
-            
+
             if (b.bullet.isAlive) {
                 let inters = intersections.get(b);
                 if (inters && inters.length > 0) {
@@ -70,11 +72,9 @@ export class BulletController {
             } else {
                 b.render.color = "#808080";
             }
-            
-            b.bullet.timeRemaining -= seconds;
         }
     }
-    
+
     private _entities: EntityContainer<Entity>;
     private _bullets = new Set<Entity>();
 }

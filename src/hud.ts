@@ -14,6 +14,8 @@ export class Hud {
                 radius: 3,
                 shape: 'hexagon',
                 lineWidth: 0.125,
+                maxBlur: 1,
+                glow: 1,
             },
         };
         entities.addEntity(this._cursorDisplay);

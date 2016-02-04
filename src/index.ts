@@ -34,6 +34,7 @@ game.entities.addEntity({
         omega: 0,
         mass: 1,
         bounce: 0.96,
+        collide: true,
     },
     render: {
         color: '#00A0FF',
@@ -41,12 +42,19 @@ game.entities.addEntity({
         shape: 'hexagon',
         radius: 1.2,
         lineWidth: 0.25,
+        maxBlur: 3,
+        glow: 1,
     },
     player: {},
     ship: {
         accel: 600,
         hp: 10,
         maxHp: 10,
+        exhaust: {
+            rate: 80,
+            mass: 0.6,
+            radius: 0.3,
+        },
     },
 });
 
