@@ -11,6 +11,7 @@ import { ParticleController }   from './particleController';
 import { PlayerController }     from './playerController';
 import { Renderer }             from './renderer';
 import { ShipController }       from './shipController';
+import { WaveGenerator }        from './waveGenerator';
 
 export class BaseGame<E extends { id?: number }> {
     public entities = new EntityContainer<E>();
@@ -26,10 +27,13 @@ export class Game extends BaseGame<Entity> {
     public enemyController = new EnemyController(this.entities);
     public bulletController = new BulletController(this.entities);
     public particleControler = new ParticleController(this.entities);
+    public waveGenerator = new WaveGenerator(this.entities);
     public hud = new Hud(this.entities);
     public input = new Input();
     
     public step(elapsedMs: number) {
+        this.waveGenerator.step(elapsedMs, this.enemyController.enemies);
+        
         this.playerController.step(elapsedMs, this.input);
         this.enemyController.step(elapsedMs, this.playerController.player);
         this.shipController.step(elapsedMs);

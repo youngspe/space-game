@@ -121,20 +121,25 @@ export module EnemyComponent {
 
 export class EnemyController {
     public constructor(entities: EntityContainer<Entity>) {
-        entities.entityAdded.listen(e => { if (e.enemy) this._enemies.add(e); });
-        entities.entityRemoved.listen(e => { this._enemies.delete(e); });
+        entities.entityAdded.listen(e => { if (e.enemy) this.enemies.add(e); });
+        entities.entityRemoved.listen(e => { this.enemies.delete(e); });
     }
 
     public step(elapsedMs: number, player: Entity) {
         let seconds = elapsedMs / 1000;
-        for (let e of this._enemies) {
-            let dif = Point.subtract(player.position, e.position);
-            let len = Point.length(dif);
-            dif.x /= len;
-            dif.y /= len;
-            e.ship.direction = dif;
+        for (let e of this.enemies) {
+
+            if (player) {
+                let dif = Point.subtract(player.position, e.position);
+                let len = Point.length(dif);
+                dif.x /= len;
+                dif.y /= len;
+                e.ship.direction = dif;
+            } else {
+                e.ship.direction = null;
+            }
         }
     }
 
-    private _enemies = new Set<Entity>();
+    public enemies = new Set<Entity>();
 }

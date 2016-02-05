@@ -45,9 +45,57 @@ export module Point {
     export function clone(p: Point): Point {
         return { x: p.x, y: p.y };
     }
-    
+
     export function normalize(p: Point): Point {
         let len = length(p);
         return { x: p.x / len, y: p.y / len };
     }
+    
+    export function zero() {
+        return { x: 0, y: 0 };
+    }
 }
+
+export module geo {
+    export module math {
+        export function randBetween(min: number, max: number): number {
+            return Math.random() * (max - min) + min;
+        }
+
+        export function randCircle(center: Point, radius: number): Point {
+            // Repeat until (x,y) is inside the unit circle.
+            while (true) {
+                let x = randBetween(-1, 1);
+                let y = randBetween(-1, 1);
+                if (x ** 2 + y ** 2 <= 1) {
+                    return {
+                        x: x * radius + center.x,
+                        y: y * radius + center.y,
+                    };
+                }
+            }
+        }
+        
+        // Approx. using sum of 3 uniform random numbers.
+        export function randGauss(mean: number, dev: number): number {
+            return (Math.random() + Math.random() + Math.random() - 1.5) * 0.67 * dev + mean;
+        }
+
+        export function randGauss2d(center: Point, dev: number): Point {
+            return {
+                x: randGauss(center.x, dev),
+                y: randGauss(center.y, dev),
+            };
+        }
+
+        export function lerp(min: number, max: number, x: number): number {
+            return x * (max - min) + min;
+        }
+
+        export function clamp(min: number, x: number, max: number): number {
+            return Math.min(Math.max(min, x), max);
+        }
+    }
+}
+
+export default geo;

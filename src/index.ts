@@ -58,6 +58,7 @@ game.entities.addEntity({
     },
 });
 
+/*
 for (let i = 0; i < 30; ++i) {
     let x = Math.random() * 320 - 160;
     let y = Math.random() * 320 - 160;
@@ -81,6 +82,7 @@ for (let i = 0; i < 30; ++i) {
         EnemyComponent.createSeeker({ x: x, y: y }, { x: 0, y: 0 })
     );
 }
+*/
 
 let keyMap: { [i: number]: Key } = {
     81: Key.UpLeft,         // Q
