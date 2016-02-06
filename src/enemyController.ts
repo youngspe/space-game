@@ -4,6 +4,8 @@ import { EntityContainer }  from './entityContainer';
 import { Game }             from './game';
 import { Point }            from './geo';
 
+const X = 0; const Y = 1;
+
 export interface EnemyComponent { }
 
 export module EnemyComponent {
@@ -132,8 +134,8 @@ export class EnemyController {
             if (player) {
                 let dif = Point.subtract(player.position, e.position);
                 let len = Point.length(dif);
-                dif.x /= len;
-                dif.y /= len;
+                dif[X] /= len;
+                dif[Y] /= len;
                 e.ship.direction = dif;
             } else {
                 e.ship.direction = null;

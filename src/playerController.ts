@@ -7,6 +7,7 @@ import { Point }                from './geo';
 import { SIN_30, COS_30 }       from './geo';
 import { Input, Key, KeyState } from './input';
 
+const X = 0; const Y = 1;
 
 export class PlayerController {
     public constructor(entities: EntityContainer<Entity>) {
@@ -48,29 +49,29 @@ export class PlayerController {
         } else {
             dvx /= len;
             dvy /= len;
-            this.player.ship.direction = { x: dvx, y: dvy };
+            this.player.ship.direction = [dvx, dvy];
         }
         
         // Bullets:
         if (this._bulletTimeLeft <= 0 && KeyState.isDown(input.getKey(Key.Fire))) {
             let normal = Point.subtract(input.cursor, this.player.position);
             let len = Point.length(normal);
-            normal.x /= len; normal.y /= len;
-            
+            normal[X] /= len; normal[Y] /= len;
+
             let newPos = Point.clone(this.player.position);
-            newPos.x += normal.x * this.player.physics.radius * 1.5;
-            newPos.y += normal.y * this.player.physics.radius * 1.5;
-            
+            newPos[X] += normal[X] * this.player.physics.radius * 1.5;
+            newPos[Y] += normal[Y] * this.player.physics.radius * 1.5;
+
             let newVel = Point.clone(this.player.physics.velocity);
-            newVel.x += normal.x * 200;
-            newVel.y += normal.y * 200;
-            
+            newVel[X] += normal[X] * 200;
+            newVel[Y] += normal[Y] * 200;
+
             let newBullet = BulletComponent.createBullet(newPos, newVel, this.bulletDamage, this.bulletLifespan);
             this._entities.addEntity(newBullet);
-            
+
             this._bulletTimeLeft += this.bulletTime;
         }
-        
+
         if (this._bulletTimeLeft > 0) {
             this._bulletTimeLeft -= seconds;
         }
@@ -80,7 +81,7 @@ export class PlayerController {
     public bulletTime = 0.1;
     public bulletLifespan = 4;
     public bulletDamage = 6;
-    
+
     private _bulletTimeLeft = 0;
     private _entities: EntityContainer<Entity>;
 }

@@ -4,10 +4,12 @@ import { EntityContainer }  from './entityContainer';
 import { Game }             from './game';
 import { Input }            from './input';
 
+const X = 0; const Y = 1;
+
 export class Hud {
     public constructor(entities: EntityContainer<Entity>) {
         this._cursorDisplay = {
-            position: { x: 0, y: 0 },
+            position: [0, 0],
             render: {
                 color: '#808080',
                 alpha: 0.3,
@@ -20,12 +22,12 @@ export class Hud {
         };
         entities.addEntity(this._cursorDisplay);
     }
-    
+
     public step(input: Input) {
         if (input.cursor) {
-            this._cursorDisplay.position = { x: input.cursor.x, y: input.cursor.y };
+            this._cursorDisplay.position = [input.cursor[X], input.cursor[Y]];
         }
     }
-    
+
     private _cursorDisplay: Entity;
 }

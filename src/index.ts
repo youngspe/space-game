@@ -3,6 +3,7 @@
 import { EnemyComponent }   from './enemyController';
 import { Entity }           from './entity';
 import { Game }             from './game';
+import { Point }            from './geo';
 import { Key }              from './input';
 
 let mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
@@ -25,9 +26,9 @@ setTimeout(function step() {
 }, 30);
 
 game.entities.addEntity({
-    position: { x: 0, y: 0 },
+    position: [0, 0],
     physics: {
-        velocity: { x: 0, y: 0 },
+        velocity: [0, 0],
         radius: 1,
         drag: 2,
         theta: 0,
@@ -58,32 +59,6 @@ game.entities.addEntity({
     },
 });
 
-/*
-for (let i = 0; i < 30; ++i) {
-    let x = Math.random() * 320 - 160;
-    let y = Math.random() * 320 - 160;
-    game.entities.addEntity(
-        EnemyComponent.createFollower({ x: x, y: y }, { x: 0, y: 0 })
-    );
-}
-
-for (let i = 0; i < 6; ++i) {
-    let x = Math.random() * 320 - 160;
-    let y = Math.random() * 320 - 160;
-    game.entities.addEntity(
-        EnemyComponent.createTank({ x: x, y: y }, { x: 0, y: 0 })
-    );
-}
-
-for (let i = 0; i < 30; ++i) {
-    let x = Math.random() * 320 - 160;
-    let y = Math.random() * 320 - 160;
-    game.entities.addEntity(
-        EnemyComponent.createSeeker({ x: x, y: y }, { x: 0, y: 0 })
-    );
-}
-*/
-
 let keyMap: { [i: number]: Key } = {
     81: Key.UpLeft,         // Q
     87: Key.Up,             // W
@@ -109,10 +84,10 @@ window.addEventListener('keyup', (e: KeyboardEvent) => {
 
 window.addEventListener('mousemove', (e: MouseEvent) => {
     let rect = mainCanvas.getBoundingClientRect();
-    let p = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top
-    };
+    let p: Point = [
+        e.clientX - rect.left,
+        e.clientY - rect.top,
+    ];
     game.input.cursor = game.renderer.screenToWorld(p);
 });
 

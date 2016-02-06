@@ -5,6 +5,8 @@ import { Game }                 from './game';
 import { Point }                from './geo';
 import { ParticleComponent }    from './particleController';
 
+const X = 0; const Y = 1;
+
 export interface ShipComponent {
     direction?: Point;
     accel: number;
@@ -33,11 +35,11 @@ export class ShipController {
             }
             if (e.ship.direction) {
                 let dvAmount = e.ship.accel * seconds;
-                let dvx = e.ship.direction.x * dvAmount;
-                let dvy = e.ship.direction.y * dvAmount;
+                let dvx = e.ship.direction[X] * dvAmount;
+                let dvy = e.ship.direction[Y] * dvAmount;
 
-                e.physics.velocity.x += dvx;
-                e.physics.velocity.y += dvy;
+                e.physics.velocity[X] += dvx;
+                e.physics.velocity[Y] += dvy;
                 
                 // exhaust:
                 if (e.ship.exhaust) {
@@ -54,15 +56,15 @@ export class ShipController {
 
                     for (let i = 0; i < actualAmount; ++i) {
                         let speedFactor = Math.random() * 0.5 + 0.75;
-                        let pvx = (e.ship.direction.x * -pSpeed * speedFactor) + e.physics.velocity.x;
-                        let pvy = (e.ship.direction.y * -pSpeed * speedFactor) + e.physics.velocity.y;
+                        let pvx = (e.ship.direction[X] * -pSpeed * speedFactor) + e.physics.velocity[X];
+                        let pvy = (e.ship.direction[Y] * -pSpeed * speedFactor) + e.physics.velocity[Y];
 
-                        let px = e.position.x - e.ship.direction.x * e.physics.radius * 1.2;
-                        let py = e.position.y - e.ship.direction.y * e.physics.radius * 1.2;
+                        let px = e.position[X] - e.ship.direction[X] * e.physics.radius * 1.2;
+                        let py = e.position[Y] - e.ship.direction[Y] * e.physics.radius * 1.2;
 
                         this._entities.addEntity(ParticleComponent.createParticle(
-                            { x: px, y: py },
-                            { x: pvx, y: pvy },
+                            [px, py],
+                            [pvx, pvy],
                             e.render.color,
                             exhaust.mass,
                             exhaust.radius,

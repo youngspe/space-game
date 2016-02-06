@@ -5,6 +5,8 @@ import { Game }             from './game';
 import { Point }            from './geo';
 import { SIN_30, COS_30 }   from './geo';
 
+const X = 0; const Y = 1;
+
 export interface RenderComponent {
     color: string;
     alpha: number;
@@ -53,14 +55,14 @@ export class Renderer {
                 let speed = Point.length(entity.physics.velocity);
                 let blurCount = Math.floor(speed * seconds / entity.render.radius + 1);
                 blurCount = Math.min(blurCount, MAX_BLUR_COUNT, entity.render.maxBlur);
-                
+
                 for (let i = 0; i < blurCount; ++i) {
                     let pos = Point.add(
                         entity.position,
-                        {
-                            x: -entity.physics.velocity.x * seconds * i / blurCount,
-                            y: -entity.physics.velocity.y * seconds * i / blurCount,
-                        }
+                        [
+                            -entity.physics.velocity[X] * seconds * i / blurCount,
+                            -entity.physics.velocity[Y] * seconds * i / blurCount,
+                        ]
                     );
                     this.renderEntity(entity, pos, Math.sqrt(1.0 / blurCount),
                         {
@@ -79,7 +81,7 @@ export class Renderer {
         ctx.save();
         let radius = e.render.radius;
 
-        ctx.translate(pos.x, pos.y);
+        ctx.translate(pos[X], pos[Y]);
         ctx.scale(radius, radius);
         if (stretch) {
             this.stretch(stretch.dir, stretch.factor);
@@ -101,27 +103,27 @@ export class Renderer {
     }
 
     private stretch(dir: Point, factor: number) {
-        let ab = { x: 1, y: 0 };
+        let ab: Point = [1, 0];
         let abDot = Point.dot(ab, dir);
         let abAmount = abDot * (factor - 1);
-        ab.x += dir.x * abAmount;
-        ab.y += dir.y * abAmount;
+        ab[X] += dir[X] * abAmount;
+        ab[Y] += dir[Y] * abAmount;
 
-        let bc = { x: 0, y: 1 };
+        let bc: Point = [0, 1];
         let bcDot = Point.dot(bc, dir);
         let bcAmount = bcDot * (factor - 1);
-        bc.x += dir.x * bcAmount;
-        bc.y += dir.y * bcAmount;
+        bc[X] += dir[X] * bcAmount;
+        bc[Y] += dir[Y] * bcAmount;
 
-        this._context.transform(ab.x, ab.y, bc.x, bc.y, 0, 0);
+        this._context.transform(ab[X], ab[Y], bc[X], bc[Y], 0, 0);
     }
 
     private setTransform() {
         let ctx = this._context;
         let scale = this.camera.zoom * ctx.canvas.height / VIEW_HEIGHT;
 
-        let dx = -this.camera.pos.x * scale + ctx.canvas.width / 2;
-        let dy = -this.camera.pos.y * scale + ctx.canvas.height / 2;
+        let dx = -this.camera.pos[X] * scale + ctx.canvas.width / 2;
+        let dy = -this.camera.pos[Y] * scale + ctx.canvas.height / 2;
 
         ctx.setTransform(scale, 0, 0, scale, dx, dy);
     }
@@ -130,7 +132,7 @@ export class Renderer {
         let ctx = this._context;
         this.setStyle(style);
         ctx.beginPath();
-        ctx.arc(center.x, center.y, radius, 0, 2 * Math.PI);
+        ctx.arc(center[X], center[Y], radius, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
     }
@@ -141,7 +143,7 @@ export class Renderer {
         ctx.strokeStyle = style.stroke;
         ctx.lineWidth = style.lineWidth;
         ctx.globalAlpha = style.alpha;
-        
+
         if (style.glow > 0) {
             ctx.shadowColor = style.stroke;
             ctx.shadowBlur = 10 * style.glow;
@@ -173,18 +175,18 @@ export class Renderer {
 
     public screenToWorld(p: Point): Point {
         let ctx = this._context;
-        let x = p.x; let y = p.y;
+        let x = p[X]; let y = p[Y];
         x -= ctx.canvas.clientWidth / 2;
         y -= ctx.canvas.clientHeight / 2;
         let fac = VIEW_HEIGHT / ctx.canvas.clientHeight;
         x *= fac; y *= fac;
-        return { x: x, y: y };
+        return [x, y];
     }
 
     public dpiScale = 1;
     public glow = 10;
 
-    public camera = { pos: { x: 0, y: 0 }, zoom: 1 };
+    public camera = { pos: [0, 0], zoom: 1 };
 
     private _context: CanvasRenderingContext2D;
     private _entities = new Set<Entity>();

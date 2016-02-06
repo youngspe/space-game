@@ -4,6 +4,8 @@ import { EntityContainer }  from './entityContainer';
 import { Game }             from './game';
 import { Point }            from './geo';
 
+const X = 0; const Y = 1;
+
 export interface PhysicsComponent {
     radius: number;
     velocity: Point;
@@ -26,7 +28,7 @@ export class Physics {
         entities.entityAdded.listen(e => { if (e.physics) this._entities.add(e); });
         entities.entityRemoved.listen(e => { this._entities.delete(e); });
     }
-    
+
     public step(elapsedMs: number) {
         this.intersections.clear();
         for (let i = 0; i < this.iterations; ++i) {
@@ -37,7 +39,7 @@ export class Physics {
             }
         }
     }
-    
+
     private addIntersection(a: Entity, b: Entity) {
         let inters = this.intersections.get(a);
         if (inters == undefined) {
@@ -53,12 +55,12 @@ export class Physics {
             let phys = entity.physics;
             let pos = entity.position;
             let vel = phys.velocity;
-            pos.x += vel.x * seconds;
-            pos.y += vel.y * seconds;
+            pos[X] += vel[X] * seconds;
+            pos[Y] += vel[Y] * seconds;
 
             let dragCoeff = Math.pow(Math.E, -worldDrag * phys.drag * seconds);
-            vel.x *= dragCoeff;
-            vel.y *= dragCoeff;
+            vel[X] *= dragCoeff;
+            vel[Y] *= dragCoeff;
 
             phys.theta += phys.omega * seconds;
         }
@@ -82,18 +84,18 @@ export class Physics {
         
         // Sort by leftmost bound of circle.
         list.sort((a, b) =>
-            Math.sign((a.position.x - a.physics.radius) - (b.position.x - b.physics.radius))
+            Math.sign((a.position[X] - a.physics.radius) - (b.position[X] - b.physics.radius))
         );
         
         // Sweep left-to-right through the entities.
         for (let i = 0; i < list.length; ++i) {
             let a = list[i];
-            let rightEdge = a.position.x + a.physics.radius;
+            let rightEdge = a.position[X] + a.physics.radius;
 
             // Check only entities to the right of a;
             for (let j = i + 1; j < list.length; ++j) {
                 let b = list[j];
-                if (b.position.x - b.physics.radius >= rightEdge) {
+                if (b.position[X] - b.physics.radius >= rightEdge) {
                     // No intersections are possible after this.
                     break;
                 }
@@ -105,74 +107,74 @@ export class Physics {
                 }
             }
         }
-        
+
         return intersections;
     }
 
     private correctCollisions(intersections: Intersection[]) {
-        let corrections = new Map<Entity, { x: number, y: number, mass: number }>();
-        
+        let corrections = new Map<Entity, { d: Point, mass: number }>();
+
         for (let i of intersections) {
             let a = i.a; let b = i.b;
             // Find the difference in position.
             let difP = Point.subtract(b.position, a.position);
             let len = Point.length(difP);
             // Normalize the difference.
-            let normal = { x: difP.x / len, y: difP.y / len };
+            let normal: Point = [difP[X] / len, difP[Y] / len];
             
             // Find the difference in velocity.
             let difV = Point.subtract(b.physics.velocity, a.physics.velocity);
             let dot = Point.dot(difV, normal);
-            
+
             let bounce = a.physics.bounce * b.physics.bounce;
-            let dv = { x: normal.x * dot * bounce, y: normal.y * dot * bounce };
-            
+            let dv = [normal[X] * dot * bounce, normal[Y] * dot * bounce];
+
             let totalMass = a.physics.mass + b.physics.mass;
-            
-            a.physics.velocity.x += dv.x * b.physics.mass / totalMass;
-            a.physics.velocity.y += dv.y * b.physics.mass / totalMass;
-            
-            b.physics.velocity.x -= dv.x * a.physics.mass / totalMass;
-            b.physics.velocity.y -= dv.y * a.physics.mass / totalMass;
+
+            a.physics.velocity[X] += dv[X] * b.physics.mass / totalMass;
+            a.physics.velocity[Y] += dv[Y] * b.physics.mass / totalMass;
+
+            b.physics.velocity[X] -= dv[X] * a.physics.mass / totalMass;
+            b.physics.velocity[Y] -= dv[Y] * a.physics.mass / totalMass;
             
             
             // Displace the entities out of each other.
             let corA = corrections.get(a);
             if (corA == undefined) {
-                corA = { x: 0, y: 0, mass: 0 }
+                corA = { d: [0, 0], mass: 0 }
                 corrections.set(a, corA);
             }
             let corB = corrections.get(b);
             if (corB == undefined) {
-                corB = { x: 0, y: 0, mass: 0 }
+                corB = { d: [0, 0], mass: 0 }
                 corrections.set(b, corB);
             }
-            
+
             let displace = (a.physics.radius + b.physics.radius) - len;
-            let disX = normal.x * displace;
-            let disY = normal.y * displace;
-            
-            corA.x -= disX * b.physics.mass;
-            corA.y -= disY * b.physics.mass;
+            let disX = normal[X] * displace;
+            let disY = normal[Y] * displace;
+
+            corA.d[X] -= disX * b.physics.mass;
+            corA.d[Y] -= disY * b.physics.mass;
             corA.mass += totalMass;
-            
-            corB.x += disX * a.physics.mass;
-            corB.y += disY * a.physics.mass;
+
+            corB.d[X] += disX * a.physics.mass;
+            corB.d[Y] += disY * a.physics.mass;
             corB.mass += totalMass;
         }
-        
+
         for (let kvp of corrections) {
             let e = kvp[0];
             let cor = kvp[1];
-            
-            let dx = cor.x / cor.mass * 1.05;
-            let dy = cor.y / cor.mass * 1.05;
-            
-            e.position.x += dx;
-            e.position.y += dy;
+
+            let dx = cor.d[X] / cor.mass * 1.05;
+            let dy = cor.d[Y] / cor.mass * 1.05;
+
+            e.position[X] += dx;
+            e.position[Y] += dy;
         }
     }
-    
+
     public iterations = 4;
 
     public intersections = new Map<Entity, Intersection[]>();

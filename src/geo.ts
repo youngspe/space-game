@@ -2,24 +2,23 @@
 
 export const SIN_30 = 0.5;
 export const COS_30 = 0.86603;
+const X = 0;
+const Y = 1;
 
-export interface Point {
-    x: number;
-    y: number;
-}
+export type Point = [number, number];
 
 export module Point {
     export function add(...points: Point[]): Point {
-        let p = { x: 0, y: 0 }
+        let p: Point = [0, 0]
         for (let p1 of points) {
-            p.x += p1.x;
-            p.y += p1.y;
+            p[X] += p1[X];
+            p[Y] += p1[Y];
         }
         return p;
     }
 
     export function subtract(p1: Point, p2: Point): Point {
-        return { x: p1.x - p2.x, y: p1.y - p2.y };
+        return [p1[X] - p2[X], p1[Y] - p2[Y]];
     }
 
     export function length(p: Point): number {
@@ -27,7 +26,7 @@ export module Point {
     }
 
     export function lengthSquared(p: Point): number {
-        return p.x ** 2 + p.y ** 2;
+        return p[X] ** 2 + p[Y] ** 2;
     }
 
     export function dist(p1: Point, p2: Point): number {
@@ -35,24 +34,28 @@ export module Point {
     }
 
     export function distSquared(p1: Point, p2: Point): number {
-        return (p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2;
+        return (p1[X] - p2[X]) ** 2 + (p1[Y] - p2[Y]) ** 2;
     }
 
     export function dot(p1: Point, p2: Point): number {
-        return p1.x * p2.x + p1.y * p2.y;
+        return p1[X] * p2[X] + p1[Y] * p2[Y];
     }
 
     export function clone(p: Point): Point {
-        return { x: p.x, y: p.y };
+        return [p[X], p[Y]];
     }
 
     export function normalize(p: Point): Point {
         let len = length(p);
-        return { x: p.x / len, y: p.y / len };
+        return [p[X] / len, p[Y] / len];
     }
-    
-    export function zero() {
-        return { x: 0, y: 0 };
+
+    export function zero(): Point {
+        return [0, 0];
+    }
+
+    export function plus(self: Point, p: Point): void {
+        self[X] += p[X]; self[Y] += p[Y];
     }
 }
 
@@ -68,10 +71,10 @@ export module geo {
                 let x = randBetween(-1, 1);
                 let y = randBetween(-1, 1);
                 if (x ** 2 + y ** 2 <= 1) {
-                    return {
-                        x: x * radius + center.x,
-                        y: y * radius + center.y,
-                    };
+                    return [
+                        x * radius + center[X],
+                        y * radius + center[Y],
+                    ];
                 }
             }
         }
@@ -82,10 +85,10 @@ export module geo {
         }
 
         export function randGauss2d(center: Point, dev: number): Point {
-            return {
-                x: randGauss(center.x, dev),
-                y: randGauss(center.y, dev),
-            };
+            return [
+                randGauss(center[X], dev),
+                randGauss(center[Y], dev),
+            ];
         }
 
         export function lerp(min: number, max: number, x: number): number {
