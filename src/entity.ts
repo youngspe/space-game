@@ -3,6 +3,7 @@ import { BulletComponent }      from './bulletController';
 import { EnemyComponent }       from './enemyController';
 import { ParticleComponent }    from './particleController';
 import { PhysicsComponent }     from './physics';
+import { PlayerComponent }      from './playerController';
 import { Point }                from './geo';
 import { RenderComponent }      from './renderer';
 import { ShipComponent }        from './shipController';
@@ -16,7 +17,7 @@ export interface Entity {
     
     physics?: PhysicsComponent;
     
-    player?: {};
+    player?: PlayerComponent;
     
     ship?: ShipComponent;
     

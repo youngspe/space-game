@@ -4,12 +4,35 @@ import { EnemyComponent }   from './enemyController';
 import { Entity }           from './entity';
 import { Game }             from './game';
 import { Point }            from './geo';
+import * as hud             from './hud';
 import { Key }              from './input';
 
-let mainCanvas = document.getElementById('mainCanvas') as HTMLCanvasElement;
+let mainCanvas = document.querySelector('#mainCanvas') as HTMLCanvasElement;
 
 let game = new Game();
+
 game.renderer.setCanvas(mainCanvas);
+
+class ElementBinding implements hud.HudDisplayBinding {
+    public constructor(element: Element, attribute?: string) {
+        attribute = attribute || 'innerText';
+        this.element = element as HTMLElement;
+        this.attribute = attribute;
+    }
+
+    public setValue(value: string) {
+        (this.element as { [s: string]: any })[this.attribute] = value;
+    }
+
+    public attribute: string;
+    public element: HTMLElement;
+}
+
+var hudDisplayController: hud.HudDisplayController = {
+    score: new ElementBinding(document.querySelector('#hud_score')),
+}
+
+game.hud.setDisplayController(hudDisplayController);
 
 let lastStepTime = performance.now();
 let timescale = 1;
@@ -46,7 +69,9 @@ game.entities.addEntity({
         maxBlur: 3,
         glow: 1,
     },
-    player: {},
+    player: {
+        score: 0,
+    },
     ship: {
         accel: 600,
         hp: 10,

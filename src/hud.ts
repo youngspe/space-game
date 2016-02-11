@@ -6,6 +6,14 @@ import { Input }            from './input';
 
 const X = 0; const Y = 1;
 
+export interface HudDisplayBinding {
+    setValue(value: string): void;
+}
+
+export interface HudDisplayController {
+    score: HudDisplayBinding;
+}
+
 export class Hud {
     public constructor(entities: EntityContainer<Entity>) {
         this._cursorDisplay = {
@@ -23,11 +31,28 @@ export class Hud {
         entities.addEntity(this._cursorDisplay);
     }
 
-    public step(input: Input) {
+    public step(player: Entity, input: Input) {
         if (input.cursor) {
             this._cursorDisplay.position = [input.cursor[X], input.cursor[Y]];
         }
+
+        if (this._displayController != null) {
+            this.displayScore(player);
+        }
     }
 
+    private displayScore(player: Entity) {
+        if (player == null) {
+            return;
+        }
+
+        this._displayController.score.setValue(player.player.score.toString());
+    }
+
+    public setDisplayController(hdc: HudDisplayController) {
+        this._displayController = hdc;
+    }
+
+    private _displayController: HudDisplayController;
     private _cursorDisplay: Entity;
 }

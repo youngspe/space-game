@@ -1,5 +1,5 @@
 'use strict';
-import { BulletComponent }     from './bulletController';
+import { BulletComponent }      from './bulletController';
 import { Entity }               from './entity';
 import { EntityContainer }      from './entityContainer';
 import { Game }                 from './game';
@@ -8,6 +8,10 @@ import { SIN_30, COS_30 }       from './geo';
 import { Input, Key, KeyState } from './input';
 
 const X = 0; const Y = 1;
+
+export interface PlayerComponent {
+    score: number;
+}
 
 export class PlayerController {
     public constructor(entities: EntityContainer<Entity>) {
