@@ -130,7 +130,10 @@ export class EnemyController {
     public step(elapsedMs: number, player: Entity) {
         let seconds = elapsedMs / 1000;
         for (let e of this.enemies) {
-
+            if (e.isDead) {
+                continue;
+            }
+            
             if (player) {
                 let dif = Point.subtract(player.position, e.position);
                 let len = Point.length(dif);

@@ -26,4 +26,6 @@ export interface Entity {
     bullet?: BulletComponent;
     
     particle?: ParticleComponent;
+    
+    isDead?: boolean;
 }

@@ -29,8 +29,11 @@ export class ShipController {
     public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;
         for (let e of this._ships) {
+            if (e.isDead) {
+                continue;
+            }
             if (e.ship.hp <= 0) {
-                this._entities.removeEntity(e);
+                this._entities.killEntity(e);
                 continue;
             }
             if (e.ship.direction) {

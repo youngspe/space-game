@@ -39,8 +39,11 @@ export class Game extends BaseGame<Entity> {
         this.shipController.step(elapsedMs);
         this.bulletController.step(elapsedMs, this.physics.intersections);
         this.particleControler.step(elapsedMs);
+        
+        this.entities.reap();
         this.physics.step(elapsedMs);
         this.hud.step(this.playerController.player, this.input);
+        
         this.input.postStep();
     }
 }
