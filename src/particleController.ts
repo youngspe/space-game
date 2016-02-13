@@ -2,6 +2,7 @@
 import { Entity }           from './entity';
 import { EntityContainer }  from './entityContainer';
 import { Point }            from './geo';
+import { System }           from './system';
 
 export interface ParticleComponent {
     lifespan: number;
@@ -41,7 +42,9 @@ export module ParticleComponent {
     }
 }
 
-export class ParticleController {
+export class ParticleController implements System {
+    public deps: System.Dependencies = {};
+
     public constructor(entities: EntityContainer<Entity>) {
         entities.entityAdded.listen(e => {
             if (e.particle) {
@@ -73,6 +76,8 @@ export class ParticleController {
         });
         this._entities = entities;
     }
+
+    public init() { }
 
     public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;

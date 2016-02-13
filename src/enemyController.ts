@@ -3,6 +3,8 @@ import { Entity }           from './entity';
 import { EntityContainer }  from './entityContainer';
 import { Game }             from './game';
 import { Point }            from './geo';
+import { PlayerController } from './playerController';
+import { System }           from './system';
 
 const X = 0; const Y = 1;
 
@@ -121,11 +123,15 @@ export module EnemyComponent {
     }
 }
 
-export class EnemyController {
+export class EnemyController implements System {
+    public deps = new EnemyController.Dependencies();
+    
     public constructor(entities: EntityContainer<Entity>) {
         entities.entityAdded.listen(e => { if (e.enemy) this.enemies.add(e); });
         entities.entityRemoved.listen(e => { this.enemies.delete(e); });
     }
+    
+    public init() { }
 
     public step(elapsedMs: number, player: Entity) {
         let seconds = elapsedMs / 1000;
@@ -147,4 +153,10 @@ export class EnemyController {
     }
 
     public enemies = new Set<Entity>();
+}
+
+export module EnemyController {
+    export class Dependencies extends System.Dependencies {
+        playerController: PlayerController;
+    }
 }

@@ -3,6 +3,7 @@ import { Entity }           from './entity';
 import { EntityContainer }  from './entityContainer';
 import { Game }             from './game';
 import { Point }            from './geo';
+import { System }           from './system';
 
 const X = 0; const Y = 1;
 
@@ -22,12 +23,16 @@ export interface Intersection {
     b: Entity,
 }
 
-const worldDrag = 4;
-export class Physics {
+const WORLD_DRAG = 4;
+export class Physics implements System {
+    public deps: System.Dependencies = {};
+
     public constructor(entities: EntityContainer<Entity>) {
         entities.entityAdded.listen(e => { if (e.physics) this._entities.add(e); });
         entities.entityRemoved.listen(e => { this._entities.delete(e); });
     }
+
+    public init() { }
 
     public step(elapsedMs: number) {
         this.intersections.clear();
@@ -58,7 +63,7 @@ export class Physics {
             pos[X] += vel[X] * seconds;
             pos[Y] += vel[Y] * seconds;
 
-            let dragCoeff = Math.pow(Math.E, -worldDrag * phys.drag * seconds);
+            let dragCoeff = Math.pow(Math.E, -WORLD_DRAG * phys.drag * seconds);
             vel[X] *= dragCoeff;
             vel[Y] *= dragCoeff;
 

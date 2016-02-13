@@ -4,6 +4,7 @@ import { EntityContainer }      from './entityContainer';
 import { Game }                 from './game';
 import { Point }                from './geo';
 import { ParticleComponent }    from './particleController';
+import { System }               from './system';
 
 const X = 0; const Y = 1;
 
@@ -19,12 +20,16 @@ export interface ShipComponent {
     };
 }
 
-export class ShipController {
+export class ShipController implements System {
+    public deps: System.Dependencies = {};
+
     public constructor(entities: EntityContainer<Entity>) {
         entities.entityAdded.listen(e => { if (e.ship) this._ships.add(e); });
         entities.entityRemoved.listen(e => { this._ships.delete(e); });
         this._entities = entities;
     }
+
+    public init() { }
 
     public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;

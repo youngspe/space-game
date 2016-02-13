@@ -1,5 +1,6 @@
 'use strict';
 import { Point }    from './geo';
+import { System }   from './system';
 
 export enum Key {
     UpLeft,
@@ -8,7 +9,7 @@ export enum Key {
     DownLeft,
     Down,
     DownRight,
-    
+
     Fire,
 }
 
@@ -25,7 +26,9 @@ export module KeyState {
     }
 }
 
-export class Input {
+export class Input implements System {
+    public deps: System.Dependencies = {};
+
     public constructor() {
         let keyCount = Object.keys(Key).length / 2;
         this._keys = new Array<KeyState>(keyCount);
@@ -33,6 +36,8 @@ export class Input {
             this._keys[i] = KeyState.Up;
         }
     }
+
+    public init() { }
 
     public getKey(key: Key) {
         return this._keys[key];

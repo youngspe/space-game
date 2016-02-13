@@ -1,7 +1,12 @@
 'use strict';
-import { Event } from './event';
+import { Event }    from './event';
+import { System }   from './system';
 
-export class EntityContainer<E extends { id?: number, isDead?: boolean }> {
+export class EntityContainer<E extends { id?: number, isDead?: boolean }> implements System {
+    public deps: System.Dependencies = {};
+    
+    public init() { }
+    
     /**
      * Adds an entity to the container.
      * @param entity The entity to add.

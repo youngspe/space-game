@@ -1,8 +1,10 @@
 'use strict';
 import { Entity }           from './entity';
 import { EntityContainer }  from './entityContainer';
-import { Intersection }     from './physics';
 import { Point }            from './geo';
+import { Intersection }     from './physics';
+import { Physics }          from './physics';
+import { System }           from './system';
 
 export interface BulletComponent {
     damage: number,
@@ -45,12 +47,16 @@ export module BulletComponent {
     }
 }
 
-export class BulletController {
+export class BulletController implements System {
+    public deps = new BulletController.Dependencies();
+
     public constructor(entities: EntityContainer<Entity>) {
         entities.entityAdded.listen(e => { if (e.bullet) this._bullets.add(e); });
         entities.entityRemoved.listen(e => { this._bullets.delete(e); });
         this._entities = entities;
     }
+
+    public init() { }
 
     public step(elapsedMs: number, intersections: Map<Entity, Intersection[]>) {
         let seconds = elapsedMs / 1000;
@@ -77,4 +83,10 @@ export class BulletController {
 
     private _entities: EntityContainer<Entity>;
     private _bullets = new Set<Entity>();
+}
+
+export module BulletController {
+    export class Dependencies extends System.Dependencies {
+        physics: Physics;
+    }
 }

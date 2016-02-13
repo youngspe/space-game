@@ -6,6 +6,7 @@ import { Game }                 from './game';
 import { Point }                from './geo';
 import { SIN_30, COS_30 }       from './geo';
 import { Input, Key, KeyState } from './input';
+import { System }               from './system';
 
 const X = 0; const Y = 1;
 
@@ -13,7 +14,9 @@ export interface PlayerComponent {
     score: number;
 }
 
-export class PlayerController {
+export class PlayerController implements System {
+    public deps = new PlayerController.Dependencies();
+
     public constructor(entities: EntityContainer<Entity>) {
         entities.entityAdded.listen(e => {
             if (e.player != null) {
@@ -27,6 +30,8 @@ export class PlayerController {
         });
         this._entities = entities;
     }
+
+    public init() { }
 
     public step(elapsedMs: number, input: Input) {
         let seconds = elapsedMs / 1000;
@@ -88,4 +93,10 @@ export class PlayerController {
 
     private _bulletTimeLeft = 0;
     private _entities: EntityContainer<Entity>;
+}
+
+export module PlayerController {
+    export class Dependencies extends System.Dependencies {
+        input: Input;
+    }
 }
