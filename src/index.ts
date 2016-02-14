@@ -98,14 +98,14 @@ let keyMap: { [i: number]: Key } = {
 window.addEventListener('keydown', (e: KeyboardEvent) => {
     let key = keyMap[e.keyCode];
     if (key != undefined) {
-        game.input.keyDown(key);
+        game.systems.input.keyDown(key);
     }
 });
 
 window.addEventListener('keyup', (e: KeyboardEvent) => {
     let key = keyMap[e.keyCode];
     if (key != undefined) {
-        game.input.keyUp(key);
+        game.systems.input.keyUp(key);
     }
 });
 
@@ -115,15 +115,15 @@ window.addEventListener('mousemove', (e: MouseEvent) => {
         e.clientX - rect.left,
         e.clientY - rect.top,
     ];
-    game.input.cursor = game.systems.renderer.screenToWorld(p);
+    game.systems.input.cursor = game.systems.renderer.screenToWorld(p);
 });
 
 window.addEventListener('mousedown', (e: MouseEvent) => {
-    game.input.keyDown(Key.Fire);
+    game.systems.input.keyDown(Key.Fire);
 });
 
 window.addEventListener('mouseup', (e: MouseEvent) => {
-    game.input.keyUp(Key.Fire);
+    game.systems.input.keyUp(Key.Fire);
 });
 
 let lastRenderTime = performance.now();

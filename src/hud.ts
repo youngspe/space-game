@@ -2,7 +2,9 @@
 import { Entity }           from './entity';
 import { EntityContainer }  from './entityContainer';
 import { Game }             from './game';
+import { Point }            from './geo';
 import { Input }            from './input';
+import { PlayerController } from './playerController';
 import { System }           from './system';
 
 const X = 0; const Y = 1;
@@ -20,7 +22,7 @@ export class Hud implements System {
 
     public init() { }
 
-    public step(player: Entity, input: Input) {
+    public step(elapsedMs: number) {
         if (this._cursorDisplay == null) {
             this._cursorDisplay = {
                 position: [0, 0],
@@ -37,12 +39,13 @@ export class Hud implements System {
             this.deps.entities.addEntity(this._cursorDisplay);
         }
 
-        if (input.cursor) {
-            this._cursorDisplay.position = [input.cursor[X], input.cursor[Y]];
+        let cursor = this.deps.input.cursor;
+        if (cursor) {
+            this._cursorDisplay.position = Point.clone(cursor);
         }
 
         if (this._displayController != null) {
-            this.displayScore(player);
+            this.displayScore(this.deps.playerController.player);
         }
     }
 
@@ -65,5 +68,7 @@ export class Hud implements System {
 export module Hud {
     export class Dependencies extends System.Dependencies {
         entities: EntityContainer<Entity> = null;
+        playerController: PlayerController = null;
+        input: Input = null;
     }
 }

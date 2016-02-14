@@ -131,8 +131,11 @@ export class EnemyController implements System {
         this.deps.entities.entityRemoved.listen(e => { this.enemies.delete(e); });
     }
 
-    public step(elapsedMs: number, player: Entity) {
+    public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;
+        
+        let player = this.deps.playerController.player;
+        
         for (let e of this.enemies) {
             if (e.isDead) {
                 continue;

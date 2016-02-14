@@ -55,9 +55,11 @@ export class BulletController implements System {
         this.deps.entities.entityRemoved.listen(e => { this._bullets.delete(e); });
     }
 
-    public step(elapsedMs: number, intersections: Map<Entity, Intersection[]>) {
+    public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;
-
+        
+        let intersections = this.deps.physics.intersections;
+        
         for (let b of this._bullets) {
 
             if (b.bullet.isAlive) {

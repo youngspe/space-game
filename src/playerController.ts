@@ -30,7 +30,7 @@ export class PlayerController implements System {
         });
     }
 
-    public step(elapsedMs: number, input: Input) {
+    public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;
         if (this.player == null) {
             return;
@@ -39,14 +39,14 @@ export class PlayerController implements System {
         let dvx = 0;
         let dvy = 0;
 
-        if (KeyState.isDown(input.getKey(Key.Up))) dvy -= 1;
-        if (KeyState.isDown(input.getKey(Key.Down))) dvy += 1;
+        if (KeyState.isDown(this.deps.input.getKey(Key.Up))) dvy -= 1;
+        if (KeyState.isDown(this.deps.input.getKey(Key.Down))) dvy += 1;
 
-        if (KeyState.isDown(input.getKey(Key.UpLeft))) { dvx -= COS_30; dvy -= SIN_30; }
-        if (KeyState.isDown(input.getKey(Key.UpRight))) { dvx += COS_30; dvy -= SIN_30; }
+        if (KeyState.isDown(this.deps.input.getKey(Key.UpLeft))) { dvx -= COS_30; dvy -= SIN_30; }
+        if (KeyState.isDown(this.deps.input.getKey(Key.UpRight))) { dvx += COS_30; dvy -= SIN_30; }
 
-        if (KeyState.isDown(input.getKey(Key.DownLeft))) { dvx -= COS_30; dvy += SIN_30; }
-        if (KeyState.isDown(input.getKey(Key.DownRight))) { dvx += COS_30; dvy += SIN_30; }
+        if (KeyState.isDown(this.deps.input.getKey(Key.DownLeft))) { dvx -= COS_30; dvy += SIN_30; }
+        if (KeyState.isDown(this.deps.input.getKey(Key.DownRight))) { dvx += COS_30; dvy += SIN_30; }
 
         let len = Math.sqrt(dvx ** 2 + dvy ** 2);
         if (len <= 0.05) {
@@ -59,8 +59,8 @@ export class PlayerController implements System {
         }
         
         // Bullets:
-        if (this._bulletTimeLeft <= 0 && KeyState.isDown(input.getKey(Key.Fire))) {
-            let normal = Point.subtract(input.cursor, this.player.position);
+        if (this._bulletTimeLeft <= 0 && KeyState.isDown(this.deps.input.getKey(Key.Fire))) {
+            let normal = Point.subtract(this.deps.input.cursor, this.player.position);
             let len = Point.length(normal);
             normal[X] /= len; normal[Y] /= len;
 

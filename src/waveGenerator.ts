@@ -20,10 +20,10 @@ export class WaveGenerator implements System {
         this._waveTime = WAVE_PERIOD;
     }
 
-    public step(elapsedMs: number, enemies: Set<Entity>) {
+    public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;
         if (this._waveTime < 0) {
-            if (enemies.size <= 10) {
+            if (this.deps.enemyController.enemies.size <= 10) {
                 this.generateWave();
             }
 

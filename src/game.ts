@@ -16,7 +16,7 @@ import { WaveGenerator }        from './waveGenerator';
 
 export abstract class BaseGame<E extends { id?: number }> {
     public systems: BaseGame.Systems;
-    
+
     public init() {
         System.initSystems(this.systems);
     }
@@ -30,28 +30,27 @@ export module BaseGame {
 
 export class Game extends BaseGame<Entity> {
     public systems = new Game.Systems();
-    
-    public input = new Input();
-    
-    public step(elapsedMs: number) {
-        this.systems.waveGenerator.step(elapsedMs, this.systems.enemyController.enemies);
 
-        this.systems.playerController.step(elapsedMs, this.input);
-        this.systems.enemyController.step(elapsedMs, this.systems.playerController.player);
+    public step(elapsedMs: number) {
+        this.systems.waveGenerator.step(elapsedMs);
+
+        this.systems.playerController.step(elapsedMs);
+        this.systems.enemyController.step(elapsedMs);
         this.systems.shipController.step(elapsedMs);
-        this.systems.bulletController.step(elapsedMs, this.systems.physics.intersections);
+        this.systems.bulletController.step(elapsedMs);
         this.systems.particleControler.step(elapsedMs);
 
         this.systems.entities.reap();
         this.systems.physics.step(elapsedMs);
-        this.systems.hud.step(this.systems.playerController.player, this.input);
+        this.systems.hud.step(elapsedMs);
 
-        this.input.postStep();
+        this.systems.input.postStep();
     }
 }
 
 export module Game {
     export class Systems extends BaseGame.Systems {
+        public input = new Input();
         public physics = new Physics();
         public renderer = new Renderer();
         public playerController = new PlayerController();
