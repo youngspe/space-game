@@ -21,15 +21,12 @@ export interface ShipComponent {
 }
 
 export class ShipController implements System {
-    public deps: System.Dependencies = {};
+    public deps = new ShipController.Dependencies();
 
-    public constructor(entities: EntityContainer<Entity>) {
-        entities.entityAdded.listen(e => { if (e.ship) this._ships.add(e); });
-        entities.entityRemoved.listen(e => { this._ships.delete(e); });
-        this._entities = entities;
+    public init() {
+        this.deps.entities.entityAdded.listen(e => { if (e.ship) this._ships.add(e); });
+        this.deps.entities.entityRemoved.listen(e => { this._ships.delete(e); });
     }
-
-    public init() { }
 
     public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;
@@ -38,7 +35,7 @@ export class ShipController implements System {
                 continue;
             }
             if (e.ship.hp <= 0) {
-                this._entities.killEntity(e);
+                this.deps.entities.killEntity(e);
                 continue;
             }
             if (e.ship.direction) {
@@ -70,7 +67,7 @@ export class ShipController implements System {
                         let px = e.position[X] - e.ship.direction[X] * e.physics.radius * 1.2;
                         let py = e.position[Y] - e.ship.direction[Y] * e.physics.radius * 1.2;
 
-                        this._entities.addEntity(ParticleComponent.createParticle(
+                        this.deps.entities.addEntity(ParticleComponent.createParticle(
                             [px, py],
                             [pvx, pvy],
                             e.render.color,
@@ -84,6 +81,11 @@ export class ShipController implements System {
         }
     }
 
-    private _entities: EntityContainer<Entity>;
     private _ships = new Set<Entity>();
+}
+
+export module ShipController {
+    export class Dependencies extends System.Dependencies {
+        entities: EntityContainer<Entity> = null;
+    }
 }

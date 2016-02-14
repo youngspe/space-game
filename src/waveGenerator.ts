@@ -12,12 +12,9 @@ const GEN_RADIUS = 200;
 export class WaveGenerator implements System {
     public deps = new WaveGenerator.Dependencies();
 
-    public constructor(entities: EntityContainer<Entity>) {
-        this._entities = entities;
+    public init() {
         this.reset();
     }
-
-    public init() { }
 
     public reset() {
         this._waveTime = WAVE_PERIOD;
@@ -44,32 +41,32 @@ export class WaveGenerator implements System {
 
         for (let i = 0; i < followers; ++i) {
             let p = geo.math.randCircle(Point.zero(), GEN_RADIUS);
-            this._entities.addEntity(EnemyComponent.createFollower(
+            this.deps.entities.addEntity(EnemyComponent.createFollower(
                 p, Point.zero()
             ));
         }
 
         for (let i = 0; i < tanks; ++i) {
             let p = geo.math.randCircle(Point.zero(), GEN_RADIUS);
-            this._entities.addEntity(EnemyComponent.createTank(
+            this.deps.entities.addEntity(EnemyComponent.createTank(
                 p, Point.zero()
             ));
         }
 
         for (let i = 0; i < seekers; ++i) {
             let p = geo.math.randCircle(Point.zero(), GEN_RADIUS);
-            this._entities.addEntity(EnemyComponent.createSeeker(
+            this.deps.entities.addEntity(EnemyComponent.createSeeker(
                 p, Point.zero()
             ));
         }
     }
 
     private _waveTime: number;
-    private _entities: EntityContainer<Entity>;
 }
 
 export module WaveGenerator {
     export class Dependencies extends System.Dependencies {
-        enemyController: EnemyController;
+        enemyController: EnemyController = null;
+        entities: EntityContainer<Entity> = null;
     }
 }

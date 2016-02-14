@@ -4,6 +4,7 @@ import { EntityContainer }  from './entityContainer';
 import { Game }             from './game';
 import { Point }            from './geo';
 import { SIN_30, COS_30 }   from './geo';
+import { System }           from './system';
 
 const X = 0; const Y = 1;
 
@@ -27,10 +28,12 @@ class Style {
 
 const VIEW_HEIGHT = 75;
 
-export class Renderer {
-    public constructor(entities: EntityContainer<Entity>) {
-        entities.entityAdded.listen(e => { if (e.render) this._entities.add(e); });
-        entities.entityRemoved.listen(e => { this._entities.delete(e); })
+export class Renderer implements System {
+    public deps = new Renderer.Dependencies();
+    
+    public init() {
+        this.deps.entities.entityAdded.listen(e => { if (e.render) this._renderObjects.add(e); });
+        this.deps.entities.entityRemoved.listen(e => { this._renderObjects.delete(e); })
     }
 
     public setCanvas(canvas: HTMLCanvasElement) {
@@ -48,7 +51,7 @@ export class Renderer {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         this.setTransform();
 
-        for (let entity of this._entities) {
+        for (let entity of this._renderObjects) {
             if (entity.physics) {
                 const MAX_BLUR_COUNT = 5;
                 let dir = Point.normalize(entity.physics.velocity);
@@ -189,5 +192,11 @@ export class Renderer {
     public camera = { pos: [0, 0], zoom: 1 };
 
     private _context: CanvasRenderingContext2D;
-    private _entities = new Set<Entity>();
+    private _renderObjects = new Set<Entity>();
+}
+
+export module Renderer {
+    export class Dependencies extends System.Dependencies {
+        entities: EntityContainer<Entity> = null;
+    }
 }

@@ -11,7 +11,9 @@ let mainCanvas = document.querySelector('#mainCanvas') as HTMLCanvasElement;
 
 let game = new Game();
 
-game.renderer.setCanvas(mainCanvas);
+game.init();
+
+game.systems.renderer.setCanvas(mainCanvas);
 
 class ElementBinding implements hud.HudDisplayBinding {
     public constructor(element: Element, attribute?: string) {
@@ -32,7 +34,7 @@ var hudDisplayController: hud.HudDisplayController = {
     score: new ElementBinding(document.querySelector('#hud_score')),
 }
 
-game.hud.setDisplayController(hudDisplayController);
+game.systems.hud.setDisplayController(hudDisplayController);
 
 let lastStepTime = performance.now();
 let timescale = 1;
@@ -48,7 +50,7 @@ setTimeout(function step() {
     setTimeout(step, 30);
 }, 30);
 
-game.entities.addEntity({
+game.systems.entities.addEntity({
     position: [0, 0],
     physics: {
         velocity: [0, 0],
@@ -113,7 +115,7 @@ window.addEventListener('mousemove', (e: MouseEvent) => {
         e.clientX - rect.left,
         e.clientY - rect.top,
     ];
-    game.input.cursor = game.renderer.screenToWorld(p);
+    game.input.cursor = game.systems.renderer.screenToWorld(p);
 });
 
 window.addEventListener('mousedown', (e: MouseEvent) => {
@@ -127,7 +129,7 @@ window.addEventListener('mouseup', (e: MouseEvent) => {
 let lastRenderTime = performance.now();
 requestAnimationFrame(function render() {
     let renderTime = performance.now();
-    game.renderer.render(renderTime - lastRenderTime);
+    game.systems.renderer.render(renderTime - lastRenderTime);
 
     lastRenderTime = renderTime;
     requestAnimationFrame(render);

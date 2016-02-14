@@ -25,14 +25,12 @@ export interface Intersection {
 
 const WORLD_DRAG = 4;
 export class Physics implements System {
-    public deps: System.Dependencies = {};
+    public deps = new Physics.Dependencies();
 
-    public constructor(entities: EntityContainer<Entity>) {
-        entities.entityAdded.listen(e => { if (e.physics) this._entities.add(e); });
-        entities.entityRemoved.listen(e => { this._entities.delete(e); });
+    public init() {
+        this.deps.entities.entityAdded.listen(e => { if (e.physics) this._physObjects.add(e); });
+        this.deps.entities.entityRemoved.listen(e => { this._physObjects.delete(e); });
     }
-
-    public init() { }
 
     public step(elapsedMs: number) {
         this.intersections.clear();
@@ -56,7 +54,7 @@ export class Physics implements System {
 
     private stepInternal(elapsedMs: number): Intersection[] {
         let seconds = elapsedMs / 1000;
-        for (let entity of this._entities) {
+        for (let entity of this._physObjects) {
             let phys = entity.physics;
             let pos = entity.position;
             let vel = phys.velocity;
@@ -82,7 +80,7 @@ export class Physics implements System {
         var list: Entity[] = [];
 
         {
-            for (let e of this._entities) {
+            for (let e of this._physObjects) {
                 if (e.physics.collide) { list.push(e); }
             }
         }
@@ -184,5 +182,11 @@ export class Physics implements System {
 
     public intersections = new Map<Entity, Intersection[]>();
 
-    private _entities = new Set<Entity>();
+    private _physObjects = new Set<Entity>();
+}
+
+export module Physics {
+    export class Dependencies extends System.Dependencies {
+        entities: EntityContainer<Entity> = null;
+    }
 }

@@ -17,21 +17,18 @@ export interface PlayerComponent {
 export class PlayerController implements System {
     public deps = new PlayerController.Dependencies();
 
-    public constructor(entities: EntityContainer<Entity>) {
-        entities.entityAdded.listen(e => {
+    public init() {
+        this.deps.entities.entityAdded.listen(e => {
             if (e.player != null) {
                 this.player = e;
             }
         });
-        entities.entityRemoved.listen(e => {
+        this.deps.entities.entityRemoved.listen(e => {
             if (e == this.player) {
                 this.player = null;
             }
         });
-        this._entities = entities;
     }
-
-    public init() { }
 
     public step(elapsedMs: number, input: Input) {
         let seconds = elapsedMs / 1000;
@@ -76,7 +73,7 @@ export class PlayerController implements System {
             newVel[Y] += normal[Y] * 200;
 
             let newBullet = BulletComponent.createBullet(newPos, newVel, this.bulletDamage, this.bulletLifespan);
-            this._entities.addEntity(newBullet);
+            this.deps.entities.addEntity(newBullet);
 
             this._bulletTimeLeft += this.bulletTime;
         }
@@ -92,11 +89,11 @@ export class PlayerController implements System {
     public bulletDamage = 6;
 
     private _bulletTimeLeft = 0;
-    private _entities: EntityContainer<Entity>;
 }
 
 export module PlayerController {
     export class Dependencies extends System.Dependencies {
-        input: Input;
+        input: Input = null;
+        entities: EntityContainer<Entity> = null;
     }
 }

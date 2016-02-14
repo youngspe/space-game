@@ -126,12 +126,10 @@ export module EnemyComponent {
 export class EnemyController implements System {
     public deps = new EnemyController.Dependencies();
     
-    public constructor(entities: EntityContainer<Entity>) {
-        entities.entityAdded.listen(e => { if (e.enemy) this.enemies.add(e); });
-        entities.entityRemoved.listen(e => { this.enemies.delete(e); });
+    public init() {
+        this.deps.entities.entityAdded.listen(e => { if (e.enemy) this.enemies.add(e); });
+        this.deps.entities.entityRemoved.listen(e => { this.enemies.delete(e); });
     }
-    
-    public init() { }
 
     public step(elapsedMs: number, player: Entity) {
         let seconds = elapsedMs / 1000;
@@ -157,6 +155,7 @@ export class EnemyController implements System {
 
 export module EnemyController {
     export class Dependencies extends System.Dependencies {
-        playerController: PlayerController;
+        playerController: PlayerController = null;
+        entities: EntityContainer<Entity> = null;
     }
 }

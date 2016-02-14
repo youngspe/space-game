@@ -50,13 +50,10 @@ export module BulletComponent {
 export class BulletController implements System {
     public deps = new BulletController.Dependencies();
 
-    public constructor(entities: EntityContainer<Entity>) {
-        entities.entityAdded.listen(e => { if (e.bullet) this._bullets.add(e); });
-        entities.entityRemoved.listen(e => { this._bullets.delete(e); });
-        this._entities = entities;
+    public init() {
+        this.deps.entities.entityAdded.listen(e => { if (e.bullet) this._bullets.add(e); });
+        this.deps.entities.entityRemoved.listen(e => { this._bullets.delete(e); });
     }
-
-    public init() { }
 
     public step(elapsedMs: number, intersections: Map<Entity, Intersection[]>) {
         let seconds = elapsedMs / 1000;
@@ -81,12 +78,12 @@ export class BulletController implements System {
         }
     }
 
-    private _entities: EntityContainer<Entity>;
     private _bullets = new Set<Entity>();
 }
 
 export module BulletController {
     export class Dependencies extends System.Dependencies {
-        physics: Physics;
+        physics: Physics = null;
+        entities: EntityContainer<Entity> = null;
     }
 }

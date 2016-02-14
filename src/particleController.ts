@@ -43,10 +43,10 @@ export module ParticleComponent {
 }
 
 export class ParticleController implements System {
-    public deps: System.Dependencies = {};
+    public deps = new ParticleController.Dependencies();
 
-    public constructor(entities: EntityContainer<Entity>) {
-        entities.entityAdded.listen(e => {
+    public init() {
+        this.deps.entities.entityAdded.listen(e => {
             if (e.particle) {
                 this._particles.add(e);
                 if (e.particle.count) {
@@ -60,13 +60,13 @@ export class ParticleController implements System {
                             }
                         }
                         if (toDelete) {
-                            this._entities.removeEntity(toDelete);
+                            this.deps.entities.removeEntity(toDelete);
                         }
                     }
                 }
             }
         });
-        entities.entityRemoved.listen(e => {
+        this.deps.entities.entityRemoved.listen(e => {
             if (e.particle) {
                 this._particles.delete(e);
                 if (e.particle.count) {
@@ -74,16 +74,13 @@ export class ParticleController implements System {
                 }
             }
         });
-        this._entities = entities;
     }
-
-    public init() { }
 
     public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;
         for (let e of this._particles) {
             if (e.particle.timeRemaining <= 0) {
-                this._entities.removeEntity(e);
+                this.deps.entities.removeEntity(e);
                 continue;
             }
             e.render.alpha = e.particle.timeRemaining / e.particle.lifespan;
@@ -94,6 +91,11 @@ export class ParticleController implements System {
     public maxParticles = 200;
 
     private _particleCount = 0;
-    private _entities: EntityContainer<Entity>;
     private _particles = new Set<Entity>();
+}
+
+export module ParticleController {
+    export class Dependencies extends System.Dependencies {
+        entities: EntityContainer<Entity> = null;
+    }
 }
