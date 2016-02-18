@@ -76,13 +76,15 @@ game.systems.entities.addEntity({
     },
     ship: {
         accel: 600,
-        hp: 10,
-        maxHp: 10,
         exhaust: {
             rate: 80,
             mass: 0.6,
             radius: 0.3,
         },
+    },
+    health: {
+        hp: 10,
+        maxHp: 10,
     },
 });
 

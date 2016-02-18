@@ -36,13 +36,15 @@ export module EnemyComponent {
             enemy: {},
             ship: {
                 accel: 100,
-                hp: 10,
-                maxHp: 10,
                 exhaust: {
                     rate: 3,
                     mass: 1.5,
                     radius: 0.4,
                 },
+            },
+            health: {
+                hp: 10,
+                maxHp: 10,
             },
         }
         return e;
@@ -73,13 +75,15 @@ export module EnemyComponent {
             enemy: {},
             ship: {
                 accel: 80,
-                hp: 30,
-                maxHp: 100,
                 exhaust: {
                     rate: 4,
                     mass: 4,
                     radius: 0.8,
                 },
+            },
+            health: {
+                hp: 30,
+                maxHp: 30,
             },
         }
         return e;
@@ -110,13 +114,15 @@ export module EnemyComponent {
             enemy: {},
             ship: {
                 accel: 150,
-                hp: 5,
-                maxHp: 5,
                 exhaust: {
                     rate: 5,
                     mass: 1,
                     radius: 0.4,
                 },
+            },
+            health: {
+                hp: 5,
+                maxHp: 5,
             },
         }
         return e;
@@ -125,7 +131,7 @@ export module EnemyComponent {
 
 export class EnemyController implements System {
     public deps = new EnemyController.Dependencies();
-    
+
     public init() {
         this.deps.entities.entityAdded.listen(e => { if (e.enemy) this.enemies.add(e); });
         this.deps.entities.entityRemoved.listen(e => { this.enemies.delete(e); });
@@ -133,14 +139,14 @@ export class EnemyController implements System {
 
     public step(elapsedMs: number) {
         let seconds = elapsedMs / 1000;
-        
+
         let player = this.deps.playerController.player;
-        
+
         for (let e of this.enemies) {
             if (e.isDead) {
                 continue;
             }
-            
+
             if (player) {
                 let dif = Point.subtract(player.position, e.position);
                 let len = Point.length(dif);

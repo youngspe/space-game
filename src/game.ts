@@ -4,11 +4,13 @@ import { EnemyController }      from './enemyController';
 import { Entity }               from './entity';
 import { EntityContainer }      from './entityContainer';
 import { Event }                from './event';
+import { HealthController }     from './healthController';
 import { Hud }                  from './hud';
 import { Input }                from './input';
 import { Physics }              from './physics';
 import { ParticleController }   from './particleController';
 import { PlayerController }     from './playerController';
+import { Reaper }               from './reaper';
 import { Renderer }             from './renderer';
 import { ShipController }       from './shipController';
 import { System }               from './system';
@@ -40,7 +42,7 @@ export class Game extends BaseGame<Entity> {
         this.systems.bulletController.step(elapsedMs);
         this.systems.particleControler.step(elapsedMs);
 
-        this.systems.entities.reap();
+        this.systems.reaper.reap();
         this.systems.physics.step(elapsedMs);
         this.systems.hud.step(elapsedMs);
 
@@ -58,7 +60,9 @@ export module Game {
         public enemyController = new EnemyController();
         public bulletController = new BulletController();
         public particleControler = new ParticleController();
+        public healthController = new HealthController();
         public waveGenerator = new WaveGenerator();
         public hud = new Hud();
+        public reaper = new Reaper();
     }
 }

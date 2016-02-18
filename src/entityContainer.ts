@@ -29,31 +29,11 @@ export class EntityContainer<E extends { id?: number, isDead?: boolean }> implem
     }
     
     /**
-     * Marks an entity as dead.
-     * The entity will be removed when reap() is called.
-     * @param entity The entity to kill.
-     */
-    public killEntity(entity: E): void {
-        entity.isDead = true;
-        this._toKill.push(entity);
-    }
-    
-    /**
      * Retrieves an entity with the given id.
      * @param id The id of the entity to retrieve.
      */
     public getById(id: number): E {
         return this._index.get(id);
-    }
-    
-    /**
-     * Removes dead entities.
-     */
-    public reap(): void {
-        for (let e of this._toKill) {
-            this.removeEntity(e);
-        }
-        this._toKill = [];
     }
 
     /**
@@ -68,7 +48,6 @@ export class EntityContainer<E extends { id?: number, isDead?: boolean }> implem
      */
     public entityRemoved = new Event<E, void>();
 
-    private _toKill: E[] = [];
     private _entities = new Set<E>();
     private _nextId = 0;
     private _index = new Map<number, E>();

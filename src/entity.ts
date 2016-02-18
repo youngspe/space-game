@@ -1,6 +1,7 @@
 'use strict';
 import { BulletComponent }      from './bulletController';
 import { EnemyComponent }       from './enemyController';
+import { HealthComponent }      from './healthController';
 import { ParticleComponent }    from './particleController';
 import { PhysicsComponent }     from './physics';
 import { PlayerComponent }      from './playerController';
@@ -26,6 +27,8 @@ export interface Entity {
     bullet?: BulletComponent;
     
     particle?: ParticleComponent;
+    
+    health?: HealthComponent;
     
     isDead?: boolean;
 }

@@ -1,6 +1,7 @@
 'use strict';
 import { Entity }           from './entity';
 import { EntityContainer }  from './entityContainer';
+import { HealthController } from './healthController';
 import { Point }            from './geo';
 import { Intersection }     from './physics';
 import { Physics }          from './physics';
@@ -67,8 +68,8 @@ export class BulletController implements System {
                 if (inters && inters.length > 0) {
                     for (let i of inters) {
                         let other = i.b;
-                        if (other.ship) {
-                            other.ship.hp -= b.bullet.damage;
+                        if (other.health) {
+                            this.deps.healthController.damageEntity(other, b.bullet.damage);
                             b.bullet.isAlive = false;
                             break;
                         }
@@ -87,5 +88,6 @@ export module BulletController {
     export class Dependencies extends System.Dependencies {
         physics: Physics = null;
         entities: EntityContainer<Entity> = null;
+        healthController: HealthController = null;
     }
 }

@@ -11,8 +11,6 @@ const X = 0; const Y = 1;
 export interface ShipComponent {
     direction?: Point;
     accel: number;
-    hp: number;
-    maxHp: number;
     exhaust?: {
         rate: number,
         mass: number,
@@ -34,10 +32,7 @@ export class ShipController implements System {
             if (e.isDead) {
                 continue;
             }
-            if (e.ship.hp <= 0) {
-                this.deps.entities.killEntity(e);
-                continue;
-            }
+            
             if (e.ship.direction) {
                 let dvAmount = e.ship.accel * seconds;
                 let dvx = e.ship.direction[X] * dvAmount;
