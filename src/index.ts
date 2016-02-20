@@ -1,6 +1,6 @@
 /// <reference path="../typings/node/node.d.ts" />
 'use strict';
-import { EnemyComponent }   from './enemyController';
+import { EnemyComponent }   from './enemies';
 import { Entity }           from './entity';
 import { Game }             from './game';
 import { Point }            from './geo';

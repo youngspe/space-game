@@ -1,6 +1,6 @@
 'use strict';
 import { BulletComponent }      from './bulletController';
-import { EnemyComponent }       from './enemyController';
+import { EnemyComponent }       from './enemies';
 import { HealthComponent }      from './healthController';
 import { ParticleComponent }    from './particleController';
 import { PhysicsComponent }     from './physics';

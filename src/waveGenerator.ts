@@ -1,6 +1,6 @@
 'use strict';
-import { EnemyComponent }   from './enemyController';
-import { EnemyController }  from './enemyController';
+import { EnemyComponent }   from './enemies';
+import { EnemyController }  from './enemies';
 import { Entity }           from './entity';
 import { EntityContainer }  from './entityContainer';
 import { geo, Point }       from './geo';

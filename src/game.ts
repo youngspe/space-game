@@ -1,6 +1,6 @@
 'use strict';
 import { BulletController }     from './bulletController';
-import { EnemyController }      from './enemyController';
+import { EnemyController }      from './enemies';
 import { Entity }               from './entity';
 import { EntityContainer }      from './entityContainer';
 import { Event }                from './event';
