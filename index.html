@@ -3,8 +3,11 @@
 <head>
     <style>
         body {
-            background-color: black
+            background-color: black;
+            color: white;
+            font-family: monospace;
         }
+        
         #mainCanvas {
             width: 100%;
             height: 100%;
@@ -14,12 +17,26 @@
             right: 0;
             bottom: 0;
         }
+        
+        #hud_scoreLabel {
+            position: absolute;
+            right: 0;
+            top: 0;
+            font-size: 5vh;
+            /* this feature is still non-standard :( */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
     </style>
 </head>
 
 <body>
 
     <canvas id="mainCanvas"></canvas>
+    <div id="hud_scoreLabel">
+        Score: <span id="hud_score"></span>
+    </div>
     <script src="./bundle.js"></script>
 </body>
 
