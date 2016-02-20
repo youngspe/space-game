@@ -46,6 +46,9 @@ export module EnemyComponent {
                 hp: 10,
                 maxHp: 10,
             },
+            scoring: {
+                value: 10,
+            },
         }
         return e;
     }
@@ -85,6 +88,9 @@ export module EnemyComponent {
                 hp: 30,
                 maxHp: 30,
             },
+            scoring: {
+                value: 20,
+            },
         }
         return e;
     }
@@ -123,6 +129,9 @@ export module EnemyComponent {
             health: {
                 hp: 5,
                 maxHp: 5,
+            },
+            scoring: {
+                value: 5,
             },
         }
         return e;

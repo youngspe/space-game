@@ -30,5 +30,9 @@ export interface Entity {
     
     health?: HealthComponent;
     
+    scoring?: {
+        value: number,
+    };
+    
     isDead?: boolean;
 }

@@ -45,16 +45,13 @@ export class Hud implements System {
         }
 
         if (this._displayController != null) {
-            this.displayScore(this.deps.playerController.player);
+            this.displayScore();
         }
     }
 
-    private displayScore(player: Entity) {
-        if (player == null) {
-            return;
-        }
-
-        this._displayController.score.setValue(player.player.score.toString());
+    private displayScore() {
+        let score = this.deps.playerController.score;
+        this._displayController.score.setValue(score.toString());
     }
 
     public setDisplayController(hdc: HudDisplayController) {

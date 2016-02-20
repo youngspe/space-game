@@ -10,10 +10,11 @@ import { System }           from './system';
 export interface BulletComponent {
     damage: number,
     isAlive: boolean,
+    source: Entity,
 }
 
 export module BulletComponent {
-    export function createBullet(pos: Point, vel: Point, damage: number, lifespan: number): Entity {
+    export function createBullet(pos: Point, vel: Point, damage: number, lifespan: number, source: Entity): Entity {
         return {
             physics: {
                 velocity: vel,
@@ -38,12 +39,13 @@ export module BulletComponent {
             bullet: {
                 damage: damage,
                 isAlive: true,
+                source: source,
             },
             particle: {
                 lifespan: lifespan,
                 timeRemaining: lifespan,
                 count: false,
-            }
+            },
         }
     }
 }
@@ -69,7 +71,7 @@ export class BulletController implements System {
                     for (let i of inters) {
                         let other = i.b;
                         if (other.health) {
-                            this.deps.healthController.damageEntity(other, b.bullet.damage);
+                            this.deps.healthController.damageEntity(other, b.bullet.damage, b.bullet.source);
                             b.bullet.isAlive = false;
                             break;
                         }

@@ -6,13 +6,12 @@ import { Game }                 from './game';
 import { Point }                from './geo';
 import { SIN_30, COS_30 }       from './geo';
 import { Input, Key, KeyState } from './input';
+import { Reaper }               from './reaper';
 import { System }               from './system';
 
 const X = 0; const Y = 1;
 
-export interface PlayerComponent {
-    score: number;
-}
+export interface PlayerComponent { }
 
 export class PlayerController implements System {
     public deps = new PlayerController.Dependencies();
@@ -26,6 +25,12 @@ export class PlayerController implements System {
         this.deps.entities.entityRemoved.listen(e => {
             if (e == this.player) {
                 this.player = null;
+            }
+        });
+        
+        this.deps.reaper.entityKilled.listen(args => {
+            if (args.killer.player && args.entity.scoring) {
+                this.score += args.entity.scoring.value;
             }
         });
     }
@@ -72,7 +77,13 @@ export class PlayerController implements System {
             newVel[X] += normal[X] * 200;
             newVel[Y] += normal[Y] * 200;
 
-            let newBullet = BulletComponent.createBullet(newPos, newVel, this.bulletDamage, this.bulletLifespan);
+            let newBullet = BulletComponent.createBullet(
+                newPos,
+                newVel,
+                this.bulletDamage,
+                this.bulletLifespan,
+                this.player
+            );
             this.deps.entities.addEntity(newBullet);
 
             this._bulletTimeLeft += this.bulletTime;
@@ -87,6 +98,7 @@ export class PlayerController implements System {
     public bulletTime = 0.1;
     public bulletLifespan = 4;
     public bulletDamage = 6;
+    public score = 0;
 
     private _bulletTimeLeft = 0;
 }
@@ -94,6 +106,7 @@ export class PlayerController implements System {
 export module PlayerController {
     export class Dependencies extends System.Dependencies {
         input: Input = null;
+        reaper: Reaper = null;
         entities: EntityContainer<Entity> = null;
     }
 }

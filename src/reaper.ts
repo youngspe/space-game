@@ -6,7 +6,7 @@ import { System }           from './system';
 
 export class Reaper implements System {
     public deps = new Reaper.Dependencies();
-    
+
     public init() { }
     
     /**
@@ -14,10 +14,10 @@ export class Reaper implements System {
      * The entity will be removed when reap() is called.
      * @param entity The entity to kill.
      */
-    public killEntity(entity: Entity): void {
+    public killEntity(entity: Entity, killer?: Entity): void {
         entity.isDead = true;
         this._toKill.add(entity);
-        this.entityKilled.emit(entity);
+        this.entityKilled.emit({ entity: entity, killer: killer });
     }
     
     /**
@@ -25,12 +25,17 @@ export class Reaper implements System {
      */
     public reap(): void {
         for (let e of this._toKill) {
-            this.deps.entities.removeEntity(e);
+            if (e.isDead) {
+                this.deps.entities.removeEntity(e);
+            }
         }
         this._toKill.clear();
     }
     
-    public entityKilled = new Event<Entity, void>();
+    /**
+     * Occurs when an entity is killed.
+     */
+    public entityKilled = new Event<Reaper.EntityKilledArgs, void>();
 
     private _toKill = new Set<Entity>();
 }
@@ -38,5 +43,10 @@ export class Reaper implements System {
 export module Reaper {
     export class Dependencies extends System.Dependencies {
         entities: EntityContainer<Entity> = null;
+    }
+
+    export interface EntityKilledArgs {
+        entity: Entity,
+        killer: Entity,
     }
 }

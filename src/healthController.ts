@@ -17,11 +17,11 @@ export class HealthController implements System {
         this.deps.entities.entityRemoved.listen(e => { this._healthEntities.delete(e); });
     }
     
-    public damageEntity(entity: Entity, damage: number) {
+    public damageEntity(entity: Entity, damage: number, source: Entity) {
         if (entity.health) {
             entity.health.hp -= damage;
             if (entity.health.hp <= 0) {
-                this.deps.reaper.killEntity(entity);
+                this.deps.reaper.killEntity(entity, source);
             }
         }
     }
