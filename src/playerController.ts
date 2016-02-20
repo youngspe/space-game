@@ -27,7 +27,7 @@ export class PlayerController implements System {
                 this.player = null;
             }
         });
-        
+
         this.deps.reaper.entityKilled.listen(args => {
             if (args.killer.player && args.entity.scoring) {
                 this.score += args.entity.scoring.value;
@@ -77,13 +77,14 @@ export class PlayerController implements System {
             newVel[X] += normal[X] * 200;
             newVel[Y] += normal[Y] * 200;
 
-            let newBullet = BulletComponent.createBullet(
-                newPos,
-                newVel,
-                this.bulletDamage,
-                this.bulletLifespan,
-                this.player
-            );
+            let newBullet = BulletComponent.createBullet({
+                source: this.player,
+                pos: newPos,
+                vel: newVel,
+                damage: this.bulletDamage,
+                lifespan: this.bulletLifespan,
+            });
+            
             this.deps.entities.addEntity(newBullet);
 
             this._bulletTimeLeft += this.bulletTime;

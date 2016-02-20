@@ -14,10 +14,16 @@ export interface BulletComponent {
 }
 
 export module BulletComponent {
-    export function createBullet(pos: Point, vel: Point, damage: number, lifespan: number, source: Entity): Entity {
+    export function createBullet(options: {
+        source: Entity,
+        pos: Point,
+        vel: Point,
+        damage: number,
+        lifespan: number,
+    }): Entity {
         return {
             physics: {
-                velocity: vel,
+                velocity: options.vel,
                 radius: 0.6,
                 bounce: 1,
                 drag: 0.125,
@@ -26,7 +32,7 @@ export module BulletComponent {
                 mass: 0.5,
                 collide: true,
             },
-            position: pos,
+            position: options.pos,
             render: {
                 color: '#40A0FF',
                 alpha: 1,
@@ -37,13 +43,13 @@ export module BulletComponent {
                 glow: 0,
             },
             bullet: {
-                damage: damage,
+                damage: options.damage,
                 isAlive: true,
-                source: source,
+                source: options.source,
             },
             particle: {
-                lifespan: lifespan,
-                timeRemaining: lifespan,
+                lifespan: options.lifespan,
+                timeRemaining: options.lifespan,
                 count: false,
             },
         }
