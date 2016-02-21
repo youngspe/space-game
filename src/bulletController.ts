@@ -43,7 +43,7 @@ export module BulletComponent {
                 radius: 0.4,
                 lineWidth: 0.1,
                 shape: 'circle',
-                maxBlur: 5,
+                maxBlur: 3,
                 glow: 0,
             },
             bullet: {

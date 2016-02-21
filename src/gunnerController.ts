@@ -19,7 +19,7 @@ export class GunnerComponent {
     color: string;
 }
 
-const BULLET_LIFESPAN = 4;
+const BULLET_LIFESPAN = 2;
 
 export class GunnerController implements System {
     public deps = new BulletController.Dependencies();

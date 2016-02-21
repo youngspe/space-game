@@ -149,7 +149,7 @@ export module EnemyComponent {
                     {
                         mode: EnemyBehavior.Mode.Shoot,
                         data: {
-                            minDistance: 10,
+                            minDistance: 6,
                             maxDistance: 40,
                         },
                     },
@@ -164,12 +164,12 @@ export module EnemyComponent {
                 },
             },
             gunner: {
-                rate: 3,
+                rate: 2,
                 direction: null,
                 timeLeft: 0,
                 damage: 4,
                 damageGroup: DamageGroup.All & ~DamageGroup.Enemy,
-                bulletSpeed: 200,
+                bulletSpeed: 150,
                 color: '#80FF00',
             },
             health: {
