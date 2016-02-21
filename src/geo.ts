@@ -59,6 +59,30 @@ export module Point {
     }
 }
 
+export type Matrix = [
+    [number, number],
+    [number, number]
+];
+
+export module Matrix {
+    export function mul(a: Matrix, b: Matrix): Matrix {
+        let vecX = pointMul(a, [b[X][X], b[Y][X]]);
+        let vecY = pointMul(a, [b[X][Y], b[Y][Y]]);
+
+        return [
+            [vecX[X], vecY[X]],
+            [vecX[Y], vecY[Y]],
+        ];
+    }
+
+    export function pointMul(a: Matrix, b: Point): Point {
+        return [
+            Point.dot(a[X], b),
+            Point.dot(a[Y], b),
+        ];
+    }
+}
+
 export module geo {
     export module math {
         export function randBetween(min: number, max: number): number {

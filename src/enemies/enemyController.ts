@@ -6,6 +6,7 @@ import { Point }            from '../geo';
 import { PlayerController } from '../playerController';
 import { System }           from '../system';
 
+import { EnemyBehavior }   from './enemyBehavior';
 import { EnemyComponent }   from './enemyComponent';
 
 const X = 0; const Y = 1;
@@ -28,15 +29,7 @@ export class EnemyController implements System {
                 continue;
             }
 
-            if (player) {
-                let dif = Point.subtract(player.position, e.position);
-                let len = Point.length(dif);
-                dif[X] /= len;
-                dif[Y] /= len;
-                e.ship.direction = dif;
-            } else {
-                e.ship.direction = null;
-            }
+            EnemyBehavior.getBehaviorFunction(e.enemy.mode)(e, this);
         }
     }
 

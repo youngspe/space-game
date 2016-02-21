@@ -1,8 +1,12 @@
 'use strict';
 import { Entity }   from '../entity';
+import { EnemyBehavior }  from './enemyBehavior';
 import { Point }    from '../geo';
 
-export interface EnemyComponent { }
+export interface EnemyComponent {
+    mode: EnemyBehavior;
+    data: EnemyBehavior.BehaviorData;
+}
 
 export module EnemyComponent {
     export function createFollower(pos: Point, vel: Point): Entity {
@@ -27,7 +31,13 @@ export module EnemyComponent {
                 maxBlur: 2,
                 glow: 0,
             },
-            enemy: {},
+            enemy: {
+                mode: EnemyBehavior.Circle,
+                data: {
+                    radius: 2,
+                    direction: EnemyBehavior.CircleDirection.Counter,
+                },
+            },
             ship: {
                 accel: 100,
                 exhaust: {
@@ -69,7 +79,13 @@ export module EnemyComponent {
                 maxBlur: 2,
                 glow: 1,
             },
-            enemy: {},
+            enemy: {
+                mode: EnemyBehavior.Circle,
+                data: {
+                    radius: 15,
+                    direction: EnemyBehavior.CircleDirection.Counter,
+                },
+            },
             ship: {
                 accel: 80,
                 exhaust: {
@@ -111,7 +127,13 @@ export module EnemyComponent {
                 maxBlur: 3,
                 glow: 0,
             },
-            enemy: {},
+            enemy: {
+                mode: EnemyBehavior.Circle,
+                data: {
+                    radius: 6,
+                    direction: EnemyBehavior.CircleDirection.Clockwise,
+                },
+            },
             ship: {
                 accel: 150,
                 exhaust: {
