@@ -63,7 +63,7 @@ export module EnemyComponent {
     }
 
     export function createTank(pos: Point, vel: Point): Entity {
-        let e = {
+        let e: Entity = {
             position: pos,
             physics: {
                 velocity: vel,
@@ -116,7 +116,7 @@ export module EnemyComponent {
     }
 
     export function createSeeker(pos: Point, vel: Point): Entity {
-        let e = {
+        let e: Entity = {
             position: pos,
             physics: {
                 velocity: vel,
@@ -146,6 +146,13 @@ export module EnemyComponent {
                             direction: EnemyBehavior.CircleDirection.Counter,
                         },
                     },
+                    {
+                        mode: EnemyBehavior.Mode.Shoot,
+                        data: {
+                            minDistance: 10,
+                            maxDistance: 40,
+                        },
+                    },
                 ],
             },
             ship: {
@@ -155,6 +162,14 @@ export module EnemyComponent {
                     mass: 1,
                     radius: 0.4,
                 },
+            },
+            gunner: {
+                rate: 3,
+                direction: null,
+                timeLeft: 0,
+                damage: 4,
+                damageGroup: DamageGroup.All & ~DamageGroup.Enemy,
+                bulletSpeed: 200,
             },
             health: {
                 hp: 5,

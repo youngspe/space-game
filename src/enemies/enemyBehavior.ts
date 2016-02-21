@@ -16,6 +16,7 @@ export module EnemyBehavior {
     export enum Mode {
         Follow,
         Circle,
+        Shoot,
     }
 
     export interface BehaviorData { }
@@ -30,6 +31,11 @@ export module EnemyBehavior {
     export interface CircleData extends BehaviorData {
         radius: number,
         direction: CircleDirection,
+    }
+
+    export interface ShootData extends BehaviorData {
+        minDistance: number,
+        maxDistance: number,
     }
 
     export interface BehaviorFunction {
@@ -90,6 +96,24 @@ export module EnemyBehavior {
             } else {
                 e.ship.direction = null;
             }
+        },
+
+        [Mode.Shoot]: (e, behavior, sys) => {
+            let data = behavior.data as ShootData;
+            let player = sys.deps.playerController.player;
+
+            if (player) {
+                let dir = Point.subtract(player.position, e.position);
+                let len = Point.length(dir);
+
+                if (len >= data.minDistance && len <= data.maxDistance) {
+                    dir[X] /= len; dir[Y] /= len;
+
+                    e.gunner.direction = dir;
+                    return;
+                }
+            }
+            e.gunner.direction = null;
         },
     }
 

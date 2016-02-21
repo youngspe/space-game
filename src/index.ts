@@ -92,8 +92,8 @@ game.systems.entities.addEntity({
         bulletSpeed: 200,
     },
     health: {
-        hp: 10,
-        maxHp: 10,
+        hp: 50,
+        maxHp: 50,
         damageGroup: DamageGroup.Player,
     },
 });
