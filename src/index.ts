@@ -90,6 +90,7 @@ game.systems.entities.addEntity({
         damage: 6,
         damageGroup: DamageGroup.All & ~DamageGroup.Player,
         bulletSpeed: 200,
+        color: '#40A0FF',
     },
     health: {
         hp: 50,

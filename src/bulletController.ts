@@ -23,6 +23,7 @@ export module BulletComponent {
         damage: number,
         lifespan: number,
         damageGroup: DamageGroup,
+        color: string,
     }): Entity {
         return {
             physics: {
@@ -37,7 +38,7 @@ export module BulletComponent {
             },
             position: options.pos,
             render: {
-                color: '#40A0FF',
+                color: options.color,
                 alpha: 1,
                 radius: 0.4,
                 lineWidth: 0.1,

@@ -170,6 +170,7 @@ export module EnemyComponent {
                 damage: 4,
                 damageGroup: DamageGroup.All & ~DamageGroup.Enemy,
                 bulletSpeed: 200,
+                color: '#80FF00',
             },
             health: {
                 hp: 5,

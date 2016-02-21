@@ -16,6 +16,7 @@ export class GunnerComponent {
     damage: number;
     damageGroup: DamageGroup;
     bulletSpeed: number;
+    color: string;
 }
 
 const BULLET_LIFESPAN = 4;
@@ -62,6 +63,7 @@ export class GunnerController implements System {
                         vel: newVel,
                         source: e,
                         lifespan: BULLET_LIFESPAN,
+                        color: e.gunner.color,
                     })
                 );
             }
