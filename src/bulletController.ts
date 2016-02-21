@@ -1,6 +1,7 @@
 'use strict';
 import { Entity }           from './entity';
 import { EntityContainer }  from './entityContainer';
+import { DamageGroup }      from './healthController';
 import { HealthController } from './healthController';
 import { Point }            from './geo';
 import { Intersection }     from './physics';
@@ -8,9 +9,10 @@ import { Physics }          from './physics';
 import { System }           from './system';
 
 export interface BulletComponent {
-    damage: number,
-    isAlive: boolean,
-    source: Entity,
+    damage: number;
+    isAlive: boolean;
+    source: Entity;
+    damageGroup: DamageGroup;
 }
 
 export module BulletComponent {
@@ -20,6 +22,7 @@ export module BulletComponent {
         vel: Point,
         damage: number,
         lifespan: number,
+        damageGroup: DamageGroup,
     }): Entity {
         return {
             physics: {
@@ -46,6 +49,7 @@ export module BulletComponent {
                 damage: options.damage,
                 isAlive: true,
                 source: options.source,
+                damageGroup: options.damageGroup,
             },
             particle: {
                 lifespan: options.lifespan,

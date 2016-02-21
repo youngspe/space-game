@@ -1,7 +1,8 @@
 'use strict';
-import { Entity }   from '../entity';
-import { EnemyBehavior }  from './enemyBehavior';
-import { Point }    from '../geo';
+import { Entity }           from '../entity';
+import { EnemyBehavior }    from './enemyBehavior';
+import { Point }            from '../geo';
+import { DamageGroup }      from '../healthController';
 
 export interface EnemyComponent {
     mode: EnemyBehavior;
@@ -49,6 +50,7 @@ export module EnemyComponent {
             health: {
                 hp: 10,
                 maxHp: 10,
+                damageGroup: DamageGroup.Enemy,
             },
             scoring: {
                 value: 10,
@@ -97,6 +99,7 @@ export module EnemyComponent {
             health: {
                 hp: 30,
                 maxHp: 30,
+                damageGroup: DamageGroup.Enemy,
             },
             scoring: {
                 value: 20,
@@ -145,6 +148,7 @@ export module EnemyComponent {
             health: {
                 hp: 5,
                 maxHp: 5,
+                damageGroup: DamageGroup.Enemy,
             },
             scoring: {
                 value: 5,

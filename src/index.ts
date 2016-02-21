@@ -4,6 +4,7 @@ import { EnemyComponent }   from './enemies';
 import { Entity }           from './entity';
 import { Game }             from './game';
 import { Point }            from './geo';
+import { DamageGroup }      from './healthController';
 import * as hud             from './hud';
 import { Key }              from './input';
 
@@ -85,6 +86,7 @@ game.systems.entities.addEntity({
     health: {
         hp: 10,
         maxHp: 10,
+        damageGroup: DamageGroup.Player,
     },
 });
 

@@ -5,6 +5,7 @@ import { EntityContainer }      from './entityContainer';
 import { Game }                 from './game';
 import { Point }                from './geo';
 import { SIN_30, COS_30 }       from './geo';
+import { DamageGroup }          from './healthController';
 import { Input, Key, KeyState } from './input';
 import { Reaper }               from './reaper';
 import { System }               from './system';
@@ -83,6 +84,7 @@ export class PlayerController implements System {
                 vel: newVel,
                 damage: this.bulletDamage,
                 lifespan: this.bulletLifespan,
+                damageGroup: DamageGroup.Player,
             });
             
             this.deps.entities.addEntity(newBullet);
