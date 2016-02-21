@@ -7,12 +7,17 @@ import * as geo             from '../geo';
 
 const X = 0; const Y = 1;
 
-export enum EnemyBehavior {
-    Follow,
-    Circle,
+export interface EnemyBehavior {
+    mode: EnemyBehavior.Mode,
+    data: EnemyBehavior.BehaviorData,
 }
 
 export module EnemyBehavior {
+    export enum Mode {
+        Follow,
+        Circle,
+    }
+
     export interface BehaviorData { }
 
     export interface FollowData extends BehaviorData { }
@@ -28,7 +33,7 @@ export module EnemyBehavior {
     }
 
     export interface BehaviorFunction {
-        (entity: Entity, system: EnemyController): void;
+        (entity: Entity, behavior: EnemyBehavior, system: EnemyController): void;
     }
 
     const circleMatrices: { [i: number]: Matrix } = {
@@ -45,7 +50,7 @@ export module EnemyBehavior {
     }
 
     const behaviorMap: { [i: number]: BehaviorFunction } = {
-        [EnemyBehavior.Follow]: (e, sys) => {
+        [Mode.Follow]: (e, behavior, sys) => {
             let player = sys.deps.playerController.player;
 
             if (player) {
@@ -59,9 +64,9 @@ export module EnemyBehavior {
             }
         },
 
-        [EnemyBehavior.Circle]: (e, sys) => {
+        [Mode.Circle]: (e, behavior, sys) => {
             let player = sys.deps.playerController.player;
-            let data = e.enemy.data as CircleData;
+            let data = behavior.data as CircleData;
 
             if (player) {
                 // Find the normalized direction from player to enemy
@@ -73,10 +78,10 @@ export module EnemyBehavior {
                     circleMatrices[data.direction],
                     normal
                 );
-                
+
                 target[X] = target[X] * data.radius + player.position[X];
                 target[Y] = target[Y] * data.radius + player.position[Y];
-                
+
                 let dir = Point.normalize(
                     Point.subtract(target, e.position)
                 );
@@ -88,7 +93,7 @@ export module EnemyBehavior {
         },
     }
 
-    export function getBehaviorFunction(mode: EnemyBehavior): BehaviorFunction {
+    export function getBehaviorFunction(mode: Mode): BehaviorFunction {
         return behaviorMap[mode];
     }
 }

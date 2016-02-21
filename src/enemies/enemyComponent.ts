@@ -5,13 +5,12 @@ import { Point }            from '../geo';
 import { DamageGroup }      from '../healthController';
 
 export interface EnemyComponent {
-    mode: EnemyBehavior;
-    data: EnemyBehavior.BehaviorData;
+    behaviors: EnemyBehavior[];
 }
 
 export module EnemyComponent {
     export function createFollower(pos: Point, vel: Point): Entity {
-        let e = {
+        let e: Entity = {
             position: pos,
             physics: {
                 velocity: vel,
@@ -33,11 +32,15 @@ export module EnemyComponent {
                 glow: 0,
             },
             enemy: {
-                mode: EnemyBehavior.Circle,
-                data: {
-                    radius: 2,
-                    direction: EnemyBehavior.CircleDirection.Counter,
-                },
+                behaviors: [
+                    {
+                        mode: EnemyBehavior.Mode.Circle,
+                        data: {
+                            radius: 2,
+                            direction: EnemyBehavior.CircleDirection.Counter,
+                        },
+                    },
+                ],
             },
             ship: {
                 accel: 100,
@@ -82,11 +85,15 @@ export module EnemyComponent {
                 glow: 1,
             },
             enemy: {
-                mode: EnemyBehavior.Circle,
-                data: {
-                    radius: 15,
-                    direction: EnemyBehavior.CircleDirection.Counter,
-                },
+                behaviors: [
+                    {
+                        mode: EnemyBehavior.Mode.Circle,
+                        data: {
+                            radius: 15,
+                            direction: EnemyBehavior.CircleDirection.Counter,
+                        },
+                    },
+                ],
             },
             ship: {
                 accel: 80,
@@ -131,11 +138,15 @@ export module EnemyComponent {
                 glow: 0,
             },
             enemy: {
-                mode: EnemyBehavior.Circle,
-                data: {
-                    radius: 6,
-                    direction: EnemyBehavior.CircleDirection.Clockwise,
-                },
+                behaviors: [
+                    {
+                        mode: EnemyBehavior.Mode.Circle,
+                        data: {
+                            radius: 6,
+                            direction: EnemyBehavior.CircleDirection.Counter,
+                        },
+                    },
+                ],
             },
             ship: {
                 accel: 150,

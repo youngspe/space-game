@@ -29,7 +29,9 @@ export class EnemyController implements System {
                 continue;
             }
 
-            EnemyBehavior.getBehaviorFunction(e.enemy.mode)(e, this);
+            for (let b of e.enemy.behaviors) {
+                EnemyBehavior.getBehaviorFunction(b.mode)(e, b, this);
+            }
         }
     }
 
