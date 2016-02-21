@@ -2,7 +2,7 @@
 import { BulletComponent }      from './bulletController';
 import { Entity }               from './entity';
 import { EntityContainer }      from './entityContainer';
-import { Game }                 from './game';
+import { GunnerController }     from './gunnerController';
 import { Point }                from './geo';
 import { SIN_30, COS_30 }       from './geo';
 import { DamageGroup }          from './healthController';
@@ -65,31 +65,13 @@ export class PlayerController implements System {
         }
         
         // Bullets:
-        if (this._bulletTimeLeft <= 0 && KeyState.isDown(this.deps.input.getKey(Key.Fire))) {
-            let normal = Point.subtract(this.deps.input.cursor, this.player.position);
-            let len = Point.length(normal);
-            normal[X] /= len; normal[Y] /= len;
-
-            let newPos = Point.clone(this.player.position);
-            newPos[X] += normal[X] * this.player.physics.radius * 1.5;
-            newPos[Y] += normal[Y] * this.player.physics.radius * 1.5;
-
-            let newVel = Point.clone(this.player.physics.velocity);
-            newVel[X] += normal[X] * 200;
-            newVel[Y] += normal[Y] * 200;
-
-            let newBullet = BulletComponent.createBullet({
-                source: this.player,
-                pos: newPos,
-                vel: newVel,
-                damage: this.bulletDamage,
-                lifespan: this.bulletLifespan,
-                damageGroup: DamageGroup.Player,
-            });
-            
-            this.deps.entities.addEntity(newBullet);
-
-            this._bulletTimeLeft += this.bulletTime;
+        if (KeyState.isDown(this.deps.input.getKey(Key.Fire))) {
+            let normal = Point.normalize(
+                Point.subtract(this.deps.input.cursor, this.player.position)
+            );
+            this.player.gunner.direction = normal;
+        } else {
+            this.player.gunner.direction = null;
         }
 
         if (this._bulletTimeLeft > 0) {
@@ -98,9 +80,6 @@ export class PlayerController implements System {
     }
 
     public player: Entity = null;
-    public bulletTime = 0.1;
-    public bulletLifespan = 4;
-    public bulletDamage = 6;
     public score = 0;
 
     private _bulletTimeLeft = 0;

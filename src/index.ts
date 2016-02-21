@@ -83,6 +83,14 @@ game.systems.entities.addEntity({
             radius: 0.3,
         },
     },
+    gunner: {
+        rate: 10,
+        direction: null,
+        timeLeft: 0,
+        damage: 6,
+        damageGroup: DamageGroup.All & ~DamageGroup.Player,
+        bulletSpeed: 200,
+    },
     health: {
         hp: 10,
         maxHp: 10,

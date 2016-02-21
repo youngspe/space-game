@@ -4,6 +4,7 @@ import { EnemyController }      from './enemies';
 import { Entity }               from './entity';
 import { EntityContainer }      from './entityContainer';
 import { Event }                from './event';
+import { GunnerController }     from './gunnerController';
 import { HealthController }     from './healthController';
 import { Hud }                  from './hud';
 import { Input }                from './input';
@@ -39,6 +40,7 @@ export class Game extends BaseGame<Entity> {
         this.systems.playerController.step(elapsedMs);
         this.systems.enemyController.step(elapsedMs);
         this.systems.shipController.step(elapsedMs);
+        this.systems.gunnerController.step(elapsedMs);
         this.systems.bulletController.step(elapsedMs);
         this.systems.particleControler.step(elapsedMs);
 
@@ -59,6 +61,7 @@ export module Game {
         public shipController = new ShipController();
         public enemyController = new EnemyController();
         public bulletController = new BulletController();
+        public gunnerController = new GunnerController();
         public particleControler = new ParticleController();
         public healthController = new HealthController();
         public waveGenerator = new WaveGenerator();

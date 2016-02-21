@@ -32,7 +32,7 @@ export class HealthController implements System {
             return;
         }
 
-        if (damageGroup | entity.health.damageGroup) {
+        if (damageGroup & entity.health.damageGroup) {
             entity.health.hp -= damage;
             if (entity.health.hp <= 0) {
                 this.deps.reaper.killEntity(entity, source);

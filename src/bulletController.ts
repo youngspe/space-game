@@ -81,7 +81,12 @@ export class BulletController implements System {
                     for (let i of inters) {
                         let other = i.b;
                         if (other.health) {
-                            this.deps.healthController.damageEntity(other, b.bullet.damage, b.bullet.source);
+                            this.deps.healthController.damageEntity(
+                                other,
+                                b.bullet.damage,
+                                b.bullet.source,
+                                b.bullet.damageGroup
+                            );
                             b.bullet.isAlive = false;
                             break;
                         }
