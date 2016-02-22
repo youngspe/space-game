@@ -33,6 +33,8 @@ class ElementBinding implements hud.HudDisplayBinding {
 
 var hudDisplayController: hud.HudDisplayController = {
     score: new ElementBinding(document.querySelector('#hud_score')),
+    hp: new ElementBinding(document.querySelector('#hud_hp')),
+    maxHp: new ElementBinding(document.querySelector('#hud_maxHp')),
 }
 
 game.systems.hud.setDisplayController(hudDisplayController);

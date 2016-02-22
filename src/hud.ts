@@ -15,6 +15,8 @@ export interface HudDisplayBinding {
 
 export interface HudDisplayController {
     score: HudDisplayBinding;
+    hp: HudDisplayBinding;
+    maxHp: HudDisplayBinding;
 }
 
 export class Hud implements System {
@@ -46,12 +48,24 @@ export class Hud implements System {
 
         if (this._displayController != null) {
             this.displayScore();
+            this.displayHealth();
         }
     }
 
     private displayScore() {
         let score = this.deps.playerController.score;
         this._displayController.score.setValue(score.toString());
+    }
+    
+    private displayHealth() {
+        let player = this.deps.playerController.player;
+        if (player == null) {
+            return;
+        }
+        
+        let health = player.health;
+        this._displayController.hp.setValue(health.hp.toString());
+        this._displayController.maxHp.setValue(health.maxHp.toString());
     }
 
     public setDisplayController(hdc: HudDisplayController) {
