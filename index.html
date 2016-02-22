@@ -22,6 +22,15 @@
             position: absolute;
             right: 0;
             top: 0;
+        }
+        
+        #hud_healthLabel {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+        }
+        
+        .label {
             font-size: 5vh;
             /* this feature is still non-standard :( */
             -webkit-user-select: none;
@@ -34,8 +43,11 @@
 <body>
 
     <canvas id="mainCanvas"></canvas>
-    <div id="hud_scoreLabel">
-        Score: <span id="hud_score"></span>
+    <div id="hud_scoreLabel" class="label">
+        Score: <span id="hud_score">-</span>
+    </div>
+    <div id="hud_healthLabel" class="label">
+        Health: <span id="hud_hp">-</span>/<span id="hud_maxHp">-</span>
     </div>
     <script src="./bundle.js"></script>
 </body>
